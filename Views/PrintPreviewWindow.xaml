@@ -1,0 +1,113 @@
+<Window x:Class="KCH_New.Views.PrintPreviewWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="معاينة الطباعة"
+        Height="700" Width="800"
+        WindowStartupLocation="CenterOwner"
+        FlowDirection="RightToLeft"
+        FontFamily="Segoe UI"
+        Style="{StaticResource MaterialDesignWindow}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="56"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Toolbar -->
+        <Border Grid.Row="0" Background="{DynamicResource PrimaryHueMidBrush}">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0">
+                <Button Style="{StaticResource MaterialDesignIconForegroundButton}"
+                        Foreground="White" ToolTip="طباعة"
+                        Click="BtnPrint_Click">
+                    <materialDesign:PackIcon Kind="Printer" Width="24" Height="24"/>
+                </Button>
+                <TextBlock Text="معاينة قبل الطباعة" Foreground="White"
+                           FontSize="16" FontWeight="Bold"
+                           VerticalAlignment="Center" Margin="12,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Invoice Preview -->
+        <ScrollViewer Grid.Row="1" Margin="16" VerticalScrollBarVisibility="Auto">
+            <Border x:Name="printArea" Background="White" Padding="40"
+                    BorderBrush="#ddd" BorderThickness="1">
+                <StackPanel>
+                    <!-- Header -->
+                    <TextBlock x:Name="lblCompany" Text="نظام إدارة القوائم - KCH"
+                               FontSize="22" FontWeight="Bold" HorizontalAlignment="Center"
+                               Foreground="{DynamicResource PrimaryHueMidBrush}"/>
+                    <Separator Margin="0,8"/>
+
+                    <!-- Invoice Info -->
+                    <Grid Margin="0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock x:Name="lblInvNo" FontSize="14" FontWeight="Bold"/>
+                            <TextBlock x:Name="lblCustomer" FontSize="13" Margin="0,4"/>
+                            <TextBlock x:Name="lblAddress" FontSize="13"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Left">
+                            <TextBlock x:Name="lblDate" FontSize="13"/>
+                            <TextBlock x:Name="lblNotes" FontSize="13" Margin="0,4"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <Separator Margin="0,8"/>
+
+                    <!-- Items Table -->
+                    <DataGrid x:Name="dgItems"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              CanUserResizeColumns="False"
+                              HeadersVisibility="Column"
+                              GridLinesVisibility="All"
+                              BorderThickness="1" BorderBrush="#ccc"
+                              Style="{StaticResource MaterialDesignDataGrid}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="#" Binding="{Binding ItemNumber}" Width="50"/>
+                            <DataGridTextColumn Header="اسم المادة" Binding="{Binding Name}" Width="*"/>
+                            <DataGridTextColumn Header="الكمية" Binding="{Binding Quantity}" Width="80"/>
+                            <DataGridTextColumn Header="سعر المفرد" Binding="{Binding UnitPrice, StringFormat=N0}" Width="110"/>
+                            <DataGridTextColumn Header="الإجمالي" Binding="{Binding TotalPrice, StringFormat=N0}" Width="110"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <Separator Margin="0,12"/>
+
+                    <!-- Totals -->
+                    <Grid HorizontalAlignment="Left" Width="300">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="28"/>
+                            <RowDefinition Height="28"/>
+                            <RowDefinition Height="28"/>
+                            <RowDefinition Height="28"/>
+                            <RowDefinition Height="28"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="المجموع الكلي:" FontWeight="Bold"/>
+                        <TextBlock x:Name="lblTotal" Grid.Row="0" Grid.Column="1"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="الخصم:" FontWeight="Bold"/>
+                        <TextBlock x:Name="lblDiscount" Grid.Row="1" Grid.Column="1"/>
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="الصافي:" FontWeight="Bold" Foreground="{DynamicResource PrimaryHueMidBrush}"/>
+                        <TextBlock x:Name="lblNet" Grid.Row="2" Grid.Column="1" FontWeight="Bold" Foreground="{DynamicResource PrimaryHueMidBrush}"/>
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="المبلغ المدفوع:" FontWeight="Bold"/>
+                        <TextBlock x:Name="lblPaid" Grid.Row="3" Grid.Column="1" Foreground="DarkGreen"/>
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="المتبقي:" FontWeight="Bold"/>
+                        <TextBlock x:Name="lblRemaining" Grid.Row="4" Grid.Column="1" Foreground="Red"/>
+                    </Grid>
+
+                    <Separator Margin="0,16"/>
+                    <TextBlock Text="شكراً لتعاملكم معنا" HorizontalAlignment="Center"
+                               FontSize="14" Foreground="Gray" FontStyle="Italic"/>
+                </StackPanel>
+            </Border>
+        </ScrollViewer>
+    </Grid>
+</Window>
