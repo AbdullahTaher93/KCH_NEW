@@ -30,6 +30,7 @@ public static class DatabaseHelper
                 Name_C TEXT,
                 Da TEXT,
                 Address_C TEXT,
+                Phone TEXT DEFAULT '',
                 Discount REAL DEFAULT 0,
                 Pay REAL DEFAULT 0,
                 Bro REAL DEFAULT 0,
@@ -50,6 +51,9 @@ public static class DatabaseHelper
             );
         ";
         cmd.ExecuteNonQuery();
+
+        // Migration: أضف عمود Phone إن لم يكن موجوداً في قواعد البيانات القديمة
+        try { cmd.CommandText = "ALTER TABLE Info_Cost ADD COLUMN Phone TEXT DEFAULT ''"; cmd.ExecuteNonQuery(); } catch { }
 
         // Insert default admin user if table is empty
         cmd.CommandText = "SELECT COUNT(*) FROM Login";

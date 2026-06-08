@@ -8,6 +8,7 @@ public class InvoiceForm : Form
     private TextBox txtInvoiceNo = new();
     private TextBox txtCustomerName = new();
     private TextBox txtAddress = new();
+    private TextBox txtPhone = new();
     private TextBox txtNotes = new();
     private TextBox txtDiscount = new();
     private TextBox txtTotal = new();
@@ -44,7 +45,7 @@ public class InvoiceForm : Form
     {
         // ── 1. إعدادات النافذة الرئيسية ──────────────────────
         this.Text = "نظام إدارة الفواتير - KCH";
-        this.Size = new Size(1100, 720);
+        this.Size = new Size(1100, 755);
         this.StartPosition = FormStartPosition.CenterScreen;
         this.FormBorderStyle = FormBorderStyle.FixedSingle;
         this.MaximizeBox = false;
@@ -76,7 +77,7 @@ public class InvoiceForm : Form
         btnPrint.Click += BtnPrint_Click;
         pnlActionBar.Controls.Add(btnPrint);
 
-        StyleButton(btnSearch, "🔍  بحث / تعديل", Color.FromArgb(240, 173, 78), new Point(495, 10));
+        StyleButton(btnSearch, "🔍  بحث", Color.FromArgb(240, 173, 78), new Point(495, 10));
         btnSearch.ForeColor = Color.Black;
         btnSearch.Click += BtnSearch_Click;
         pnlActionBar.Controls.Add(btnSearch);
@@ -108,7 +109,7 @@ public class InvoiceForm : Form
         btnZoomOut.Click += BtnZoomOut_Click;
         pnlActionBar.Controls.Add(btnZoomOut);
 
-        StyleButton(btnLogout, "🚪  خروج", Color.FromArgb(150, 40, 50), new Point(15, 10));
+        StyleButton(btnLogout, "خروج", Color.FromArgb(150, 40, 50), new Point(15, 10));
         btnLogout.Size = new Size(90, 40);
         btnLogout.Click += BtnLogout_Click;
         pnlActionBar.Controls.Add(btnLogout);
@@ -117,7 +118,7 @@ public class InvoiceForm : Form
         // ── 3. منطقة بيانات الفاتورة المحدثة (توزيع آمن لمنع اختفاء الملاحظات) ──
         var pnlHeaderCard = new Panel
         {
-            Size = new Size(1060, 140),
+            Size = new Size(1060, 175),
             Location = new Point(15, 90),
             BackColor = Color.FromArgb(32, 38, 46)
         };
@@ -140,21 +141,26 @@ public class InvoiceForm : Form
         dtpDate.CustomFormat = "dd-MM-yyyy";
         pnlHeaderCard.Controls.Add(dtpDate);
 
-        // الصف السفلي: عنوان الزبون | ملاحظات الفاتورة
-        pnlHeaderCard.Controls.Add(CreateLabel("عنوان الزبون:", new Point(950, 75)));
-        StyleTextBox(txtAddress, new Size(250, 30), new Point(690, 71), false);
+        // الصف الثاني: عنوان الزبون | رقم الهاتف
+        pnlHeaderCard.Controls.Add(CreateLabel("عنوان الزبون:", new Point(950, 69)));
+        StyleTextBox(txtAddress, new Size(250, 30), new Point(690, 65), false);
         pnlHeaderCard.Controls.Add(txtAddress);
 
-        pnlHeaderCard.Controls.Add(CreateLabel("ملاحظات الفاتورة:", new Point(540, 75)));
-        StyleTextBox(txtNotes, new Size(410, 45), new Point(120, 71), false);
+        pnlHeaderCard.Controls.Add(CreateLabel("رقم الهاتف:", new Point(530, 69)));
+        StyleTextBox(txtPhone, new Size(150, 30), new Point(370, 65), false);
+        pnlHeaderCard.Controls.Add(txtPhone);
+
+        // الصف الثالث: ملاحظات الفاتورة
+        pnlHeaderCard.Controls.Add(CreateLabel("ملاحظات:", new Point(950, 112)));
+        StyleTextBox(txtNotes, new Size(820, 40), new Point(120, 108), false);
         txtNotes.Multiline = true;
         txtNotes.ScrollBars = ScrollBars.Vertical;
         pnlHeaderCard.Controls.Add(txtNotes);
-        txtNotes.BringToFront(); // ضمان ظهور الحقل في الطبقة الأمامية دائماً
+        txtNotes.BringToFront();
 
 
         // ── 4. جدول المواد والأزرار الجانبية الخاصة بالترتيب ──────────────────
-        dgvItems.Location = new Point(75, 245);
+        dgvItems.Location = new Point(75, 280);
         dgvItems.Size = new Size(1000, 260);
         dgvItems.Font = new Font("Segoe UI", currentAppFontSize);
         dgvItems.BackgroundColor = Color.FromArgb(42, 48, 57);
@@ -172,8 +178,8 @@ public class InvoiceForm : Form
         dgvItems.ColumnHeadersHeight = 38;
 
         dgvItems.Columns.Add("No", "ت");
-        dgvItems.Columns.Add("Name_Object", "📦  اسم المادة / الصنف");
-        dgvItems.Columns.Add("No_Object", "🔢  العدد (الكمية)");
+        dgvItems.Columns.Add("Name_Object", "📦 اسم المادة");
+        dgvItems.Columns.Add("No_Object", "🔢 العدد");
         dgvItems.Columns.Add("Price_Object", "💰  سعر المفرد");
         dgvItems.Columns.Add("Total_price", "💵  المبلغ الإجمالي");
 
@@ -192,7 +198,7 @@ public class InvoiceForm : Form
         btnMoveUp.Text = "🔼";
         btnMoveUp.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
         btnMoveUp.Size = new Size(50, 50);
-        btnMoveUp.Location = new Point(15, 320);
+        btnMoveUp.Location = new Point(15, 355);
         btnMoveUp.BackColor = Color.FromArgb(0, 120, 215);
         btnMoveUp.ForeColor = Color.White;
         btnMoveUp.FlatStyle = FlatStyle.Flat;
@@ -205,7 +211,7 @@ public class InvoiceForm : Form
         btnMoveDown.Text = "🔽";
         btnMoveDown.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
         btnMoveDown.Size = new Size(50, 50);
-        btnMoveDown.Location = new Point(15, 380);
+        btnMoveDown.Location = new Point(15, 415);
         btnMoveDown.BackColor = Color.FromArgb(0, 120, 215);
         btnMoveDown.ForeColor = Color.White;
         btnMoveDown.FlatStyle = FlatStyle.Flat;
@@ -219,7 +225,7 @@ public class InvoiceForm : Form
         var pnlSummaryCard = new Panel
         {
             Size = new Size(1060, 120),
-            Location = new Point(15, 520),
+            Location = new Point(15, 555),
             BackColor = Color.FromArgb(32, 38, 46)
         };
         this.Controls.Add(pnlSummaryCard);
@@ -330,6 +336,7 @@ public class InvoiceForm : Form
 
         txtCustomerName.Font = newFont;
         txtAddress.Font = newFont;
+        txtPhone.Font = newFont;
         txtNotes.Font = newFont;
         dtpDate.Font = boldFont;
 
@@ -387,6 +394,7 @@ public class InvoiceForm : Form
     {
         txtCustomerName.ReadOnly = readOnly;
         txtAddress.ReadOnly = readOnly;
+        txtPhone.ReadOnly = readOnly;
         txtNotes.ReadOnly = readOnly;
         txtDiscount.ReadOnly = readOnly;
         dgvItems.ReadOnly = readOnly;
@@ -395,6 +403,7 @@ public class InvoiceForm : Form
         {
             txtCustomerName.BackColor = Color.FromArgb(48, 56, 65);
             txtAddress.BackColor = Color.FromArgb(48, 56, 65);
+            txtPhone.BackColor = Color.FromArgb(48, 56, 65);
             txtNotes.BackColor = Color.FromArgb(48, 56, 65);
             txtDiscount.BackColor = Color.FromArgb(48, 56, 65);
         }
@@ -406,6 +415,7 @@ public class InvoiceForm : Form
         txtInvoiceNo.Clear();
         txtCustomerName.Clear();
         txtAddress.Clear();
+        txtPhone.Clear();
         txtNotes.Clear();
         txtDiscount.Text = "0";
         txtTotal.Text = "0";
@@ -451,23 +461,43 @@ public class InvoiceForm : Form
 
             using var cmdInsert = conn.CreateCommand();
             cmdInsert.Transaction = transaction;
-            cmdInsert.CommandText = @"INSERT INTO Info_Cost (Name_C, Da, Address_C, Discount, Pay, Bro, Final_price, S_P, Nodes)
-                                     VALUES (@name, @da, @address, 0, 0, 0, 0, 0, @nodes);
-                                     SELECT last_insert_rowid();";
+            cmdInsert.CommandText = @"INSERT INTO Info_Cost (Name_C, Da, Address_C, Phone, Discount, Pay, Bro, Final_price, S_P, Nodes)
+                                     VALUES (@name, @da, @address, @phone, 0, 0, 0, 0, 0, @nodes)
+                                     RETURNING ID_C";
             cmdInsert.Parameters.AddWithValue("@name", txtCustomerName.Text);
             cmdInsert.Parameters.AddWithValue("@da", dtpDate.Text);
             cmdInsert.Parameters.AddWithValue("@address", txtAddress.Text);
+            cmdInsert.Parameters.AddWithValue("@phone", txtPhone.Text);
             cmdInsert.Parameters.AddWithValue("@nodes", txtNotes.Text);
 
-            var invoiceId = Convert.ToInt64(cmdInsert.ExecuteScalar());
+            // استخدام ExecuteReader بدل ExecuteScalar لضمان قراءة RETURNING ID_C بشكل صحيح
+            long invoiceId;
+            using (var rdr = cmdInsert.ExecuteReader())
+            {
+                if (!rdr.Read()) throw new Exception("فشل الحصول على رقم الفاتورة — يرجى المحاولة مجدداً!");
+                invoiceId = rdr.GetInt64(0);
+            }
+            if (invoiceId <= 0) throw new Exception("رقم الفاتورة غير صالح: " + invoiceId);
             txtInvoiceNo.Text = invoiceId.ToString();
 
             double totalAmount = 0;
             for (int i = 0; i < dgvItems.Rows.Count - 1; i++)
             {
                 var row = dgvItems.Rows[i];
-                var qty = Convert.ToDouble(row.Cells["No_Object"].Value);
-                var price = Convert.ToDouble(row.Cells["Price_Object"].Value);
+
+                // حماية كاملة من القيم الفارغة أو null في خلايا الجدول
+                var nameVal  = row.Cells["Name_Object"].Value;
+                var qtyVal   = row.Cells["No_Object"].Value;
+                var priceVal = row.Cells["Price_Object"].Value;
+
+                if (nameVal == null || nameVal == DBNull.Value ||
+                    qtyVal  == null || qtyVal  == DBNull.Value ||
+                    priceVal == null || priceVal == DBNull.Value)
+                    continue; // تخطّ الصف الفارغ
+
+                if (!double.TryParse(qtyVal.ToString(),   out double qty))   continue;
+                if (!double.TryParse(priceVal.ToString(), out double price)) continue;
+
                 var itemTotal = qty * price;
                 totalAmount += itemTotal;
 
@@ -478,10 +508,10 @@ public class InvoiceForm : Form
                 cmdItem.Transaction = transaction;
                 cmdItem.CommandText = @"INSERT INTO Menu_Cost (ID_C, ID_O, Name_Object, No_Object, Price_Object, Total_price)
                                        VALUES (@idC, @idO, @name, @no, @price, @total)";
-                cmdItem.Parameters.AddWithValue("@idC", invoiceId);
-                cmdItem.Parameters.AddWithValue("@idO", i + 1);
-                cmdItem.Parameters.AddWithValue("@name", row.Cells["Name_Object"].Value?.ToString() ?? "");
-                cmdItem.Parameters.AddWithValue("@no", qty);
+                cmdItem.Parameters.AddWithValue("@idC",   invoiceId);
+                cmdItem.Parameters.AddWithValue("@idO",   i + 1);
+                cmdItem.Parameters.AddWithValue("@name",  nameVal.ToString()!);
+                cmdItem.Parameters.AddWithValue("@no",    qty);
                 cmdItem.Parameters.AddWithValue("@price", price);
                 cmdItem.Parameters.AddWithValue("@total", itemTotal);
                 cmdItem.ExecuteNonQuery();

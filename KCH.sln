@@ -1,9 +1,10 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.31903.59
+# Visual Studio Version 18
+VisualStudioVersion = 18.6.11822.322 stable
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00805F507460}") = "KCH", "KCH\KCH.csproj", "{8875F4D5-F331-4C44-9426-4BA9B03775FC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KCH", "KCH\KCH.csproj", "{8875F4D5-F331-4C44-9426-4BA9B03775FC}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "KCH_Setup", "KCH_Setup\KCH_Setup.vdproj", "{375392D2-E0DA-EFA5-DEDD-12A44008C8D4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,5 +16,13 @@ Global
 		{8875F4D5-F331-4C44-9426-4BA9B03775FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8875F4D5-F331-4C44-9426-4BA9B03775FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8875F4D5-F331-4C44-9426-4BA9B03775FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{375392D2-E0DA-EFA5-DEDD-12A44008C8D4}.Debug|Any CPU.ActiveCfg = Debug
+		{375392D2-E0DA-EFA5-DEDD-12A44008C8D4}.Release|Any CPU.ActiveCfg = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4A965E93-567F-4D65-84AF-F8B85DFB1524}
 	EndGlobalSection
 EndGlobal

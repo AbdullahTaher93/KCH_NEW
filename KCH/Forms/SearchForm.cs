@@ -8,6 +8,9 @@ public class SearchForm : Form
     private TextBox txtSearch = new();
     private TextBox txtInvoiceNo = new();
     private TextBox txtCustomerName = new();
+    private TextBox txtAddress = new();
+    private TextBox txtPhone = new();
+
     private TextBox txtTotal = new();
     private TextBox txtDiscount = new();
     private TextBox txtNetAmount = new();
@@ -43,7 +46,7 @@ public class SearchForm : Form
     {
         // ── 1. إعدادات النافذة الرئيسية ──────────────────────
         this.Text = "البحث عن الفواتير والتعديل - KCH";
-        this.Size = new Size(1100, 750);
+        this.Size = new Size(1100, 800);
         this.StartPosition = FormStartPosition.CenterScreen;
         this.FormBorderStyle = FormBorderStyle.FixedSingle;
         this.MaximizeBox = false;
@@ -126,7 +129,7 @@ public class SearchForm : Form
         // ── 3. بطاقة عرض تفاصيل الفاتورة المحملة ────────────────
         var pnlHeaderCard = new Panel
         {
-            Size = new Size(1060, 85),
+            Size = new Size(1060, 130),
             Location = new Point(15, 140),
             BackColor = Color.FromArgb(32, 38, 46)
         };
@@ -148,8 +151,17 @@ public class SearchForm : Form
         dtpDate.CustomFormat = "dd-MM-yyyy";
         pnlHeaderCard.Controls.Add(dtpDate);
 
+        // الصف الثاني: عنوان الزبون | رقم الهاتف
+        pnlHeaderCard.Controls.Add(CreateLabel("عنوان الزبون:", new Point(950, 82)));
+        StyleTextBox(txtAddress, new Size(500, 32), new Point(425, 78), true);
+        pnlHeaderCard.Controls.Add(txtAddress);
+
+        pnlHeaderCard.Controls.Add(CreateLabel("رقم الهاتف:", new Point(305, 82)));
+        StyleTextBox(txtPhone, new Size(155, 32), new Point(145, 78), true);
+        pnlHeaderCard.Controls.Add(txtPhone);
+
         // ── 4. جدول عرض المواد والأزرار الجانبية للتحريك ──────────────────────
-        dgvItems.Location = new Point(75, 245);
+        dgvItems.Location = new Point(75, 290);
         dgvItems.Size = new Size(1000, 260);
         dgvItems.BackgroundColor = Color.FromArgb(42, 48, 57);
         dgvItems.ForeColor = Color.Black;
@@ -186,7 +198,7 @@ public class SearchForm : Form
         btnMoveUp.Text = "🔼";
         btnMoveUp.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
         btnMoveUp.Size = new Size(50, 50);
-        btnMoveUp.Location = new Point(15, 320);
+        btnMoveUp.Location = new Point(15, 365);
         btnMoveUp.BackColor = Color.FromArgb(240, 173, 78);
         btnMoveUp.ForeColor = Color.Black;
         btnMoveUp.FlatStyle = FlatStyle.Flat;
@@ -199,7 +211,7 @@ public class SearchForm : Form
         btnMoveDown.Text = "🔽";
         btnMoveDown.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
         btnMoveDown.Size = new Size(50, 50);
-        btnMoveDown.Location = new Point(15, 380);
+        btnMoveDown.Location = new Point(15, 425);
         btnMoveDown.BackColor = Color.FromArgb(240, 173, 78);
         btnMoveDown.ForeColor = Color.Black;
         btnMoveDown.FlatStyle = FlatStyle.Flat;
@@ -212,7 +224,7 @@ public class SearchForm : Form
         var pnlSummaryCard = new Panel
         {
             Size = new Size(1060, 120),
-            Location = new Point(15, 520),
+            Location = new Point(15, 565),
             BackColor = Color.FromArgb(32, 38, 46)
         };
         this.Controls.Add(pnlSummaryCard);
@@ -244,12 +256,12 @@ public class SearchForm : Form
         pnlSummaryCard.Controls.Add(txtRemaining);
 
         // ── 6. أزرار التحكم السفلية ─────────────────────────
-        StyleButton(btnPrint, "🖨️ طباعة الفاتورة", Color.FromArgb(108, 117, 125), new Point(165, 660));
+        StyleButton(btnPrint, "🖨️ طباعة الفاتورة", Color.FromArgb(108, 117, 125), new Point(165, 705));
         btnPrint.Size = new Size(140, 40);
         btnPrint.Click += BtnPrint_Click;
         this.Controls.Add(btnPrint);
 
-        StyleButton(btnBack, "↩️ رجوع للرئيسية", Color.FromArgb(50, 55, 65), new Point(15, 660));
+        StyleButton(btnBack, "↩️ رجوع للرئيسية", Color.FromArgb(50, 55, 65), new Point(15, 705));
         btnBack.Size = new Size(140, 40);
         btnBack.Click += BtnBack_Click;
         this.Controls.Add(btnBack);
@@ -471,7 +483,16 @@ public class SearchForm : Form
         {
             txtInvoiceNo.Text = reader["ID_C"]?.ToString();
             txtCustomerName.Text = reader["Name_C"]?.ToString();
-            dtpDate.Text = reader["Da"]?.ToString();
+            txtAddress.Text = reader["Address_C"]?.ToString() ?? "";
+            txtPhone.Text = reader["Phone"]?.ToString() ?? "";
+            if (DateTime.TryParse(reader["Da"]?.ToString(), out DateTime parsedDate))
+            {
+                dtpDate.Value = parsedDate;
+            }
+            else
+            {
+                dtpDate.Value = DateTime.Now; // تاريخ افتراضي في حال فشل التحويل
+            }
             txtTotal.Text = reader["Final_price"]?.ToString();
             txtDiscount.Text = reader["Discount"]?.ToString();
             txtNetAmount.Text = reader["S_P"]?.ToString();
@@ -568,9 +589,12 @@ public class SearchForm : Form
 
             using var cmdUpdate = conn.CreateCommand();
             cmdUpdate.Transaction = transaction;
-            cmdUpdate.CommandText = @"UPDATE Info_Cost SET Da = @da, Discount = @disc, Pay = @pay, Bro = @bro, Final_price = @final, S_P = @sp
+            cmdUpdate.CommandText = @"UPDATE Info_Cost SET Da = @da, Address_C = @address, Phone = @phone, Discount = @disc, Pay = @pay, Bro = @bro, Final_price = @final, S_P = @sp
                                      WHERE ID_C = @id";
-            cmdUpdate.Parameters.AddWithValue("@da", dtpDate.Text);
+            // في دالة BtnSave_Click عند الـ Update:
+            cmdUpdate.Parameters.AddWithValue("@da", dtpDate.Value.ToString("dd-MM-yyyy"));
+            cmdUpdate.Parameters.AddWithValue("@address", txtAddress.Text);
+            cmdUpdate.Parameters.AddWithValue("@phone", txtPhone.Text);
             cmdUpdate.Parameters.AddWithValue("@disc", discount);
             cmdUpdate.Parameters.AddWithValue("@pay", paid);
             cmdUpdate.Parameters.AddWithValue("@bro", remaining);

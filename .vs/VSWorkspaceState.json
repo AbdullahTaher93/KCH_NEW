@@ -1,7 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\KCH",
+    "\\KCH\\Forms"
   ],
-  "SelectedNode": "\\KCH.sln",
+  "SelectedNode": "\\KCH\\Forms\\InvoiceForm.cs",
   "PreviewInSolutionExplorer": false
 }

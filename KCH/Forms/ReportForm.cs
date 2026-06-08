@@ -18,6 +18,7 @@ public class ReportForm : Form
     private Label lblAddressVal = new();
     private Label lblDateVal = new();
     private Label lblNotesVal = new();
+    private Label lblPhoneVal = new();
 
     // عناصر عرض المجاميع والحسابات السفلية التفاعلية
     private Label lblTotalVal = new();
@@ -137,7 +138,7 @@ public class ReportForm : Form
 
         var mainLayout = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 5, BackColor = Color.White };
         mainLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 120F));
-        mainLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 90F));
+        mainLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 130F));
         mainLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
         mainLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 165F));
         mainLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
@@ -158,7 +159,7 @@ public class ReportForm : Form
         mainLayout.Controls.Add(pnlHeader, 0, 0);
 
         // ب) جدول تفاصيل معلومات الفاتورة
-        infoTable = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 4, RowCount = 2, Padding = new Padding(0, 5, 0, 5), BackColor = Color.White };
+        infoTable = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 4, RowCount = 3, Padding = new Padding(0, 5, 0, 5), BackColor = Color.White };
         infoTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 15F)); infoTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 35F));
         infoTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 15F)); infoTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 35F));
 
@@ -166,11 +167,15 @@ public class ReportForm : Form
         lblCustomerVal = new Label { Font = new Font("Segoe UI", 11, FontStyle.Bold), ForeColor = ColorTextDark, AutoSize = true, Anchor = AnchorStyles.Right };
         lblDateVal = new Label { Font = new Font("Arial", 12, FontStyle.Bold), ForeColor = ColorTextDark, AutoSize = true, Anchor = AnchorStyles.Right };
         lblNotesVal = new Label { Font = new Font("Segoe UI", 11, FontStyle.Regular), ForeColor = ColorTextDark, AutoSize = true, Anchor = AnchorStyles.Right };
+        lblAddressVal = new Label { Font = new Font("Segoe UI", 11, FontStyle.Regular), ForeColor = ColorTextDark, AutoSize = true, Anchor = AnchorStyles.Right };
+        lblPhoneVal = new Label { Font = new Font("Segoe UI", 11, FontStyle.Regular), ForeColor = ColorTextDark, AutoSize = true, Anchor = AnchorStyles.Right };
 
         infoTable.Controls.Add(MakeBoldLabel("رقم القائمة:"), 0, 0); infoTable.Controls.Add(lblInvoiceNo, 1, 0);
         infoTable.Controls.Add(MakeBoldLabel("التاريخ:"), 2, 0); infoTable.Controls.Add(lblDateVal, 3, 0);
         infoTable.Controls.Add(MakeBoldLabel("اسم الزبون:"), 0, 1); infoTable.Controls.Add(lblCustomerVal, 1, 1);
-        infoTable.Controls.Add(MakeBoldLabel("الملاحظات:"), 2, 1); infoTable.Controls.Add(lblNotesVal, 3, 1);
+        infoTable.Controls.Add(MakeBoldLabel("رقم الهاتف:"), 2, 1); infoTable.Controls.Add(lblPhoneVal, 3, 1);
+        infoTable.Controls.Add(MakeBoldLabel("عنوان الزبون:"), 0, 2); infoTable.Controls.Add(lblAddressVal, 1, 2);
+        infoTable.Controls.Add(MakeBoldLabel("الملاحظات:"), 2, 2); infoTable.Controls.Add(lblNotesVal, 3, 2);
         mainLayout.Controls.Add(infoTable, 0, 1);
 
         // ج) داتا جريد عرض المواد
@@ -182,8 +187,8 @@ public class ReportForm : Form
 
         dgvItems.Columns.Add(new DataGridViewTextBoxColumn { Name = "No", HeaderText = "No.", FillWeight = 10 });
         dgvItems.Columns.Add(new DataGridViewTextBoxColumn { Name = "Name", HeaderText = "أسم المادة / الصنف", FillWeight = 45 });
-        dgvItems.Columns.Add(new DataGridViewTextBoxColumn { Name = "UnitPrice", HeaderText = "سعر المفرد", FillWeight = 15 });
         dgvItems.Columns.Add(new DataGridViewTextBoxColumn { Name = "Qty", HeaderText = "العدد", FillWeight = 12 });
+        dgvItems.Columns.Add(new DataGridViewTextBoxColumn { Name = "UnitPrice", HeaderText = "سعر المفرد", FillWeight = 15 });
         dgvItems.Columns.Add(new DataGridViewTextBoxColumn { Name = "Total", HeaderText = "المبلغ الكلي", FillWeight = 18 });
         mainLayout.Controls.Add(dgvItems, 0, 2);
 
@@ -271,7 +276,7 @@ public class ReportForm : Form
         {
             using var conn = DatabaseHelper.GetConnection();
             using var cmd = conn.CreateCommand();
-            cmd.CommandText = "SELECT Name_C, Da, Address_C, Discount, Pay, Bro, Final_price, S_P, Nodes FROM Info_Cost WHERE ID_C = @id";
+            cmd.CommandText = "SELECT Name_C, Da, Address_C, Phone, Discount, Pay, Bro, Final_price, S_P, Nodes FROM Info_Cost WHERE ID_C = @id";
             cmd.Parameters.AddWithValue("@id", _invoiceId);
 
             using var reader = cmd.ExecuteReader();
@@ -280,13 +285,15 @@ public class ReportForm : Form
             lblInvoiceNo.Text = $"{_invoiceId}";
             lblCustomerVal.Text = reader.IsDBNull(0) ? "زبون عام" : reader.GetString(0);
             lblDateVal.Text = reader.IsDBNull(1) ? "" : reader.GetString(1);
-            lblNotesVal.Text = reader.IsDBNull(8) ? "لا توجد ملاحظات" : reader.GetString(8);
+            lblAddressVal.Text = reader.IsDBNull(2) ? "" : reader.GetString(2);
+            lblPhoneVal.Text = reader.IsDBNull(3) ? "" : reader.GetString(3);
+            lblNotesVal.Text = reader.IsDBNull(9) ? "لا توجد ملاحظات" : reader.GetString(9);
 
-            double discount = reader.IsDBNull(3) ? 0 : reader.GetDouble(3);
-            double paid = reader.IsDBNull(4) ? 0 : reader.GetDouble(4);
-            double remaining = reader.IsDBNull(5) ? 0 : reader.GetDouble(5);
-            double total = reader.IsDBNull(6) ? 0 : reader.GetDouble(6);
-            double net = reader.IsDBNull(7) ? 0 : reader.GetDouble(7);
+            double discount = reader.IsDBNull(4) ? 0 : reader.GetDouble(4);
+            double paid = reader.IsDBNull(5) ? 0 : reader.GetDouble(5);
+            double remaining = reader.IsDBNull(6) ? 0 : reader.GetDouble(6);
+            double total = reader.IsDBNull(7) ? 0 : reader.GetDouble(7);
+            double net = reader.IsDBNull(8) ? 0 : reader.GetDouble(8);
 
             lblTotalVal.Text = $"{total:N0}";
             lblDiscountVal.Text = $"{discount:N0}";
@@ -306,8 +313,8 @@ public class ReportForm : Form
                 dgvItems.Rows.Add(
                     r2.IsDBNull(0) ? "" : r2.GetInt64(0).ToString(),
                     r2.IsDBNull(1) ? "" : r2.GetString(1),
-                    r2.IsDBNull(3) ? "0" : r2.GetDouble(3).ToString("N0"),
                     r2.IsDBNull(2) ? "0" : r2.GetDouble(2).ToString("N0"),
+                    r2.IsDBNull(3) ? "0" : r2.GetDouble(3).ToString("N0"),
                     r2.IsDBNull(4) ? "0" : r2.GetDouble(4).ToString("N0")
                 );
             }
@@ -385,7 +392,7 @@ public class ReportForm : Form
             g.DrawString(pageStr, sideNumbersFont, Brushes.Gray, marginX + printWidth - g.MeasureString(pageStr, sideNumbersFont).Width - 5, currentY + 45);
 
             using var titleFont = new Font("Arial", 14f, FontStyle.Bold);
-            string textLine1 = "شركة المطابخ العالمية";
+            string textLine1 = "المطابخ العالمية";
             g.DrawString(textLine1, titleFont, navyBrush, marginX + (printWidth - g.MeasureString(textLine1, titleFont).Width) / 2, currentY - 5);
             currentY += 22;
             using var subFont1 = new Font("Arial", 10F, FontStyle.Bold);
@@ -405,29 +412,38 @@ public class ReportForm : Form
             if (_pageNumber == 1)
             {
                 currentY += 8;
-                int infoBoxHeight = 40;
+                int rowH = 40;
+                int infoBoxHeight = rowH * 2;
+                int halfWidth = printWidth / 2;
+
                 using var boxPen = new Pen(Color.FromArgb(160, 165, 175), 1f);
                 g.DrawRectangle(boxPen, marginX, currentY, printWidth, infoBoxHeight);
-
-                int colWidth = printWidth / 3;
-
-                // رسم الفواصل العمودية بدقة متساوية
-                g.DrawLine(boxPen, marginX + colWidth, currentY, marginX + colWidth, currentY + infoBoxHeight);
-                g.DrawLine(boxPen, marginX + (colWidth * 2), currentY, marginX + (colWidth * 2), currentY + infoBoxHeight);
+                g.DrawLine(boxPen, marginX + halfWidth, currentY, marginX + halfWidth, currentY + infoBoxHeight);
+                g.DrawLine(boxPen, marginX, currentY + rowH, marginX + printWidth, currentY + rowH);
 
                 using var infoBoxFont = new Font("Arial", 10.5f, FontStyle.Bold);
 
-                // القسم الأول (اليمين): جهة الشحن
-                Rectangle rect1 = new Rectangle(marginX + (colWidth * 2), currentY, colWidth, infoBoxHeight);
-                g.DrawString("جهة الشحن: بغداد / العراق", infoBoxFont, darkBrush, rect1, arabicFormat);
+                // Format خاص بصندوق المعلومات: Near في RTL = محاذاة اليمين
+                using var infoRightFormat = new StringFormat
+                {
+                    FormatFlags = StringFormatFlags.DirectionRightToLeft,
+                    Alignment = StringAlignment.Near,
+                    LineAlignment = StringAlignment.Center
+                };
 
-                // القسم الثاني (الوسط): اسم الزبون
-                Rectangle rect2 = new Rectangle(marginX + colWidth, currentY, colWidth, infoBoxHeight);
-                g.DrawString($"الزبون: {lblCustomerVal.Text}", infoBoxFont, darkBrush, rect2, arabicFormat);
+                // ── العمود الأيمن: اسم الزبون (صف1) + رقم الهاتف (صف2) ──
+                Rectangle rectCustomer = new Rectangle(marginX + halfWidth, currentY, halfWidth, rowH);
+                g.DrawString($"الزبون: {lblCustomerVal.Text}", infoBoxFont, darkBrush, rectCustomer, infoRightFormat);
 
-                // القسم الثالث (اليسار): الملاحظات (تأكد أن النص هنا هو الملاحظات فقط)
-                Rectangle rect3 = new Rectangle(marginX, currentY, colWidth, infoBoxHeight);
-                g.DrawString($"الملاحظات: {lblNotesVal.Text}", infoBoxFont, darkBrush, rect3, arabicFormat);
+                Rectangle rectPhone = new Rectangle(marginX + halfWidth, currentY + rowH, halfWidth, rowH);
+                g.DrawString($"الهاتف: {lblPhoneVal.Text}", infoBoxFont, darkBrush, rectPhone, infoRightFormat);
+
+                // ── العمود الأيسر: عنوان الزبون (صف1) + الملاحظات (صف2) ──
+                Rectangle rectAddress = new Rectangle(marginX, currentY, halfWidth, rowH);
+                g.DrawString($"العنوان: {lblAddressVal.Text}", infoBoxFont, darkBrush, rectAddress, infoRightFormat);
+
+                Rectangle rectNotes = new Rectangle(marginX, currentY + rowH, halfWidth, rowH);
+                g.DrawString($"الملاحظات: {lblNotesVal.Text}", infoBoxFont, darkBrush, rectNotes, infoRightFormat);
 
                 currentY += infoBoxHeight + 20;
             }
@@ -440,7 +456,7 @@ public class ReportForm : Form
             using var pageNumFont = new Font("Arial", 9f, FontStyle.Regular);
             // تحديد مستطيل في أقصى يسار الصفحة أعلى أو أسفل الجدول
             Rectangle pageNumRect = new Rectangle(marginX, currentY - 15, 100, 20);
-            g.DrawString($"صفحة رقم: {_pageNumber}", pageNumFont, Brushes.Gray, pageNumRect, arabicFormat);
+            
 
             // ── بِنَاءُ رَأْسِ جَدْوَلِ المَوَادِّ (من اليمين إلى اليسار تماماً) ──
             float printFontSize = currentInvoiceFontSize;
@@ -448,8 +464,8 @@ public class ReportForm : Form
             using var textWhite = new SolidBrush(Color.White);
             using var borderPen = new Pen(Color.FromArgb(180, 185, 195), 1f);
 
-            // عرض الأعمدة بالتسلسل العربي: (No -> 10%, اسم المادة -> 45%, سعر المفرد -> 15%, الكمية -> 12%, المبلغ الكلي -> 18%)
-            int[] colWidths = { (int)(printWidth * 0.10), (int)(printWidth * 0.45), (int)(printWidth * 0.15), (int)(printWidth * 0.12), (int)(printWidth * 0.18) };
+            // عرض الأعمدة بالتسلسل العربي: (No -> 10%, اسم المادة -> 45%, الكمية -> 12%, سعر المفرد -> 15%, المبلغ الكلي -> 18%)
+            int[] colWidths = { (int)(printWidth * 0.10), (int)(printWidth * 0.45), (int)(printWidth * 0.12), (int)(printWidth * 0.15), (int)(printWidth * 0.18) };
             int rowHeight = 35;
 
             g.FillRectangle(new SolidBrush(ColorPrimaryNavy), marginX, currentY, printWidth, rowHeight);
@@ -512,35 +528,35 @@ public class ReportForm : Form
             using var numberFont = new Font("Consolas", 10.5f, FontStyle.Bold);
 
             g.FillRectangle(new SolidBrush(Color.FromArgb(240, 242, 245)), blockX, currentY, totalBlockWidth, blockHeight);
-            g.DrawString("المجموع الكلي", headerFont, darkBrush, blockX + totalBlockWidth - 100, currentY + 3);
+            g.DrawString("$ المجموع الكلي", headerFont, darkBrush, blockX + totalBlockWidth - 100, currentY + 3);
             g.DrawString(lblTotalVal.Text, numberFont, darkBrush, blockX + 15, currentY + 3);
 
             currentY += blockHeight + 2;
             g.FillRectangle(new SolidBrush(Color.FromArgb(255, 230, 230)), blockX, currentY, totalBlockWidth, blockHeight);
-            g.DrawString("خصم الفاتورة", headerFont, new SolidBrush(Color.FromArgb(166, 41, 41)), blockX + totalBlockWidth - 100, currentY + 3);
+            g.DrawString("$ خصم الفاتورة", headerFont, new SolidBrush(Color.FromArgb(166, 41, 41)), blockX + totalBlockWidth - 100, currentY + 3);
             g.DrawString(lblDiscountVal.Text, numberFont, new SolidBrush(Color.FromArgb(166, 41, 41)), blockX + 15, currentY + 3);
 
             currentY += blockHeight + 2;
-            g.FillRectangle(new SolidBrush(ColorPrimaryNavy), blockX, currentY, totalBlockWidth, blockHeight);
-            g.DrawString("المبلغ الصافي $", headerFont, textWhite, blockX + totalBlockWidth - 100, currentY + 3);
-            g.DrawString(lblNetVal.Text, numberFont, textWhite, blockX + 15, currentY + 3);
+            g.FillRectangle(new SolidBrush(Color.FromArgb(240, 242, 245)), blockX, currentY, totalBlockWidth, blockHeight);
+            g.DrawString("$ المبلغ الصافي", headerFont, darkBrush, blockX + totalBlockWidth - 100, currentY + 3);
+            g.DrawString(lblNetVal.Text, numberFont, darkBrush, blockX + 15, currentY + 3);
 
             currentY += blockHeight + 2;
-            g.FillRectangle(new SolidBrush(Color.FromArgb(220, 225, 235)), blockX, currentY, totalBlockWidth, blockHeight);
-            g.DrawString("المبلغ الواصل", headerFont, darkBrush, blockX + totalBlockWidth - 100, currentY + 3);
+            g.FillRectangle(new SolidBrush(Color.FromArgb(240, 242, 245)), blockX, currentY, totalBlockWidth, blockHeight);
+            g.DrawString("$ المبلغ الواصل", headerFont, darkBrush, blockX + totalBlockWidth - 100, currentY + 3);
             g.DrawString(lblPaidVal.Text, numberFont, darkBrush, blockX + 15, currentY + 3);
 
             currentY += blockHeight + 2;
-            g.FillRectangle(new SolidBrush(ColorRedAlert), blockX, currentY, totalBlockWidth, blockHeight);
-            g.DrawString("المتبقي بذمته", headerFont, textWhite, blockX + totalBlockWidth - 100, currentY + 3);
-            g.DrawString(lblRemainingVal.Text, numberFont, textWhite, blockX + 15, currentY + 3);
+            g.FillRectangle(new SolidBrush(Color.FromArgb(240, 242, 245)), blockX, currentY, totalBlockWidth, blockHeight);
+            g.DrawString("$ المتبقي بذمته", headerFont, darkBrush, blockX + totalBlockWidth - 100, currentY + 3);
+            g.DrawString(lblRemainingVal.Text, numberFont, darkBrush, blockX + 15, currentY + 3);
 
             // الفوتر والتذييل النهائي
             currentY += 30;
             using var linePen = new Pen(Color.LightGray, 1f);
             g.DrawLine(linePen, marginX, currentY, marginX + printWidth, currentY);
             using var footerFont = new Font("Arial", 9f, FontStyle.Regular);
-            g.DrawString("Email: info@kch-company.com  |  Web: www.kch-system.com", footerFont, Brushes.Gray, marginX, currentY + 8);
+            g.DrawString("تاريخ الطباعة: " + DateTime.Now.ToString("yyyy-MM-dd h:mm tt"), footerFont, Brushes.Gray, marginX, currentY + 8);
 
             ev.HasMorePages = false;
         };

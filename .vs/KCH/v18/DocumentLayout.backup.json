@@ -3,6 +3,14 @@
   "WorkspaceRootPath": "C:\\Accenture\\KCH_New\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{8875F4D5-F331-4C44-9426-4BA9B03775FC}|KCH\\KCH.csproj|c:\\accenture\\kch_new\\kch\\forms\\invoiceform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8875F4D5-F331-4C44-9426-4BA9B03775FC}|KCH\\KCH.csproj|solutionrelative:kch\\forms\\invoiceform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8875F4D5-F331-4C44-9426-4BA9B03775FC}|KCH\\KCH.csproj|C:\\Accenture\\KCH_New\\kch\\forms\\invoiceform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{8875F4D5-F331-4C44-9426-4BA9B03775FC}|KCH\\KCH.csproj|solutionrelative:kch\\forms\\invoiceform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{8875F4D5-F331-4C44-9426-4BA9B03775FC}|KCH\\KCH.csproj|c:\\accenture\\kch_new\\kch\\forms\\reportform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{8875F4D5-F331-4C44-9426-4BA9B03775FC}|KCH\\KCH.csproj|solutionrelative:kch\\forms\\reportform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -11,24 +19,32 @@
       "RelativeMoniker": "D:0:0:{8875F4D5-F331-4C44-9426-4BA9B03775FC}|KCH\\KCH.csproj|solutionrelative:kch\\forms\\searchform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8875F4D5-F331-4C44-9426-4BA9B03775FC}|KCH\\KCH.csproj|c:\\accenture\\kch_new\\kch\\forms\\searchform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{8875F4D5-F331-4C44-9426-4BA9B03775FC}|KCH\\KCH.csproj|C:\\Accenture\\KCH_New\\kch\\forms\\searchform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{8875F4D5-F331-4C44-9426-4BA9B03775FC}|KCH\\KCH.csproj|solutionrelative:kch\\forms\\searchform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8875F4D5-F331-4C44-9426-4BA9B03775FC}|KCH\\KCH.csproj|c:\\accenture\\kch_new\\kch\\forms\\invoiceform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8875F4D5-F331-4C44-9426-4BA9B03775FC}|KCH\\KCH.csproj|solutionrelative:kch\\forms\\invoiceform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{8875F4D5-F331-4C44-9426-4BA9B03775FC}|KCH\\KCH.csproj|c:\\accenture\\kch_new\\kch\\forms\\reportform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{8875F4D5-F331-4C44-9426-4BA9B03775FC}|KCH\\KCH.csproj|solutionrelative:kch\\forms\\reportform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8875F4D5-F331-4C44-9426-4BA9B03775FC}|KCH\\KCH.csproj|c:\\accenture\\kch_new\\kch\\kch.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{8875F4D5-F331-4C44-9426-4BA9B03775FC}|KCH\\KCH.csproj|solutionrelative:kch\\kch.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8875F4D5-F331-4C44-9426-4BA9B03775FC}|KCH\\KCH.csproj|c:\\accenture\\kch_new\\kch\\kch.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
+      "RelativeMoniker": "D:0:0:{8875F4D5-F331-4C44-9426-4BA9B03775FC}|KCH\\KCH.csproj|solutionrelative:kch\\kch.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8875F4D5-F331-4C44-9426-4BA9B03775FC}|KCH\\KCH.csproj|c:\\accenture\\kch_new\\kch\\data\\databasehelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8875F4D5-F331-4C44-9426-4BA9B03775FC}|KCH\\KCH.csproj|solutionrelative:kch\\data\\databasehelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{8875F4D5-F331-4C44-9426-4BA9B03775FC}|KCH\\KCH.csproj|c:\\accenture\\kch_new\\kch\\forms\\loginform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{8875F4D5-F331-4C44-9426-4BA9B03775FC}|KCH\\KCH.csproj|solutionrelative:kch\\forms\\loginform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8875F4D5-F331-4C44-9426-4BA9B03775FC}|KCH\\KCH.csproj|c:\\accenture\\kch_new\\kch\\forms\\loginform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{8875F4D5-F331-4C44-9426-4BA9B03775FC}|KCH\\KCH.csproj|C:\\Accenture\\KCH_New\\kch\\forms\\loginform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{8875F4D5-F331-4C44-9426-4BA9B03775FC}|KCH\\KCH.csproj|solutionrelative:kch\\forms\\loginform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8875F4D5-F331-4C44-9426-4BA9B03775FC}|KCH\\KCH.csproj|c:\\accenture\\kch_new\\kch\\forms\\invoiceform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{8875F4D5-F331-4C44-9426-4BA9B03775FC}|KCH\\KCH.csproj|solutionrelative:kch\\forms\\invoiceform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     }
   ],
   "DocumentGroupContainers": [
@@ -38,37 +54,15 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 6,
           "Children": [
             {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "ReportForm.cs",
-              "DocumentMoniker": "C:\\Accenture\\KCH_New\\KCH\\Forms\\ReportForm.cs",
-              "RelativeDocumentMoniker": "KCH\\Forms\\ReportForm.cs",
-              "ToolTip": "C:\\Accenture\\KCH_New\\KCH\\Forms\\ReportForm.cs",
-              "RelativeToolTip": "KCH\\Forms\\ReportForm.cs",
-              "ViewState": "AgIAAKABAAAAAAAAAAAqwLgBAABrAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-04T14:54:09.909Z",
-              "EditorCaption": ""
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "SearchForm.cs",
-              "DocumentMoniker": "C:\\Accenture\\KCH_New\\KCH\\Forms\\SearchForm.cs",
-              "RelativeDocumentMoniker": "KCH\\Forms\\SearchForm.cs",
-              "ToolTip": "C:\\Accenture\\KCH_New\\KCH\\Forms\\SearchForm.cs",
-              "RelativeToolTip": "KCH\\Forms\\SearchForm.cs",
-              "ViewState": "AgIAAJgCAAAAAAAAAADwv6QCAAAdAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-04T13:08:41.292Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "SearchForm.cs [Design]",
               "DocumentMoniker": "C:\\Accenture\\KCH_New\\KCH\\Forms\\SearchForm.cs",
               "RelativeDocumentMoniker": "KCH\\Forms\\SearchForm.cs",
@@ -80,20 +74,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "LoginForm.cs",
-              "DocumentMoniker": "C:\\Accenture\\KCH_New\\KCH\\Forms\\LoginForm.cs",
-              "RelativeDocumentMoniker": "KCH\\Forms\\LoginForm.cs",
-              "ToolTip": "C:\\Accenture\\KCH_New\\KCH\\Forms\\LoginForm.cs",
-              "RelativeToolTip": "KCH\\Forms\\LoginForm.cs",
-              "ViewState": "AgIAAJgAAAAAAAAAAADwv70AAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-04T12:29:42.061Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 10,
               "Title": "LoginForm.cs [Design]",
               "DocumentMoniker": "C:\\Accenture\\KCH_New\\KCH\\Forms\\LoginForm.cs",
               "RelativeDocumentMoniker": "KCH\\Forms\\LoginForm.cs",
@@ -105,20 +86,33 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "InvoiceForm.cs",
-              "DocumentMoniker": "C:\\Accenture\\KCH_New\\KCH\\Forms\\InvoiceForm.cs",
-              "RelativeDocumentMoniker": "KCH\\Forms\\InvoiceForm.cs",
-              "ToolTip": "C:\\Accenture\\KCH_New\\KCH\\Forms\\InvoiceForm.cs",
-              "RelativeToolTip": "KCH\\Forms\\InvoiceForm.cs",
-              "ViewState": "AgIAAFgAAAAAAAAAAAAawJMAAABRAAAAAAAAAA==",
+              "DocumentIndex": 2,
+              "Title": "ReportForm.cs",
+              "DocumentMoniker": "C:\\Accenture\\KCH_New\\KCH\\Forms\\ReportForm.cs",
+              "RelativeDocumentMoniker": "KCH\\Forms\\ReportForm.cs",
+              "ToolTip": "C:\\Accenture\\KCH_New\\KCH\\Forms\\ReportForm.cs",
+              "RelativeToolTip": "KCH\\Forms\\ReportForm.cs",
+              "ViewState": "AgIAAB4BAAAAAAAAAAAswBYBAABvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-04T12:18:41.296Z",
+              "WhenOpened": "2026-06-04T14:54:09.909Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 3,
+              "Title": "SearchForm.cs",
+              "DocumentMoniker": "C:\\Accenture\\KCH_New\\KCH\\Forms\\SearchForm.cs",
+              "RelativeDocumentMoniker": "KCH\\Forms\\SearchForm.cs",
+              "ToolTip": "C:\\Accenture\\KCH_New\\KCH\\Forms\\SearchForm.cs",
+              "RelativeToolTip": "KCH\\Forms\\SearchForm.cs",
+              "ViewState": "AgIAAIkAAAAAAAAAAAAAAIwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-04T13:08:41.292Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "InvoiceForm.cs [Design]",
               "DocumentMoniker": "C:\\Accenture\\KCH_New\\KCH\\Forms\\InvoiceForm.cs",
               "RelativeDocumentMoniker": "KCH\\Forms\\InvoiceForm.cs",
@@ -127,6 +121,82 @@
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-06-04T12:18:33.835Z",
               "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "InvoiceForm.cs",
+              "DocumentMoniker": "C:\\Accenture\\KCH_New\\KCH\\Forms\\InvoiceForm.cs",
+              "RelativeDocumentMoniker": "KCH\\Forms\\InvoiceForm.cs",
+              "ToolTip": "C:\\Accenture\\KCH_New\\KCH\\Forms\\InvoiceForm.cs",
+              "RelativeToolTip": "KCH\\Forms\\InvoiceForm.cs",
+              "ViewState": "AgIAAKMAAAAAAAAAAAAswLQAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-04T12:18:41.296Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "LoginForm.cs",
+              "DocumentMoniker": "C:\\Accenture\\KCH_New\\KCH\\Forms\\LoginForm.cs",
+              "RelativeDocumentMoniker": "KCH\\Forms\\LoginForm.cs",
+              "ToolTip": "C:\\Accenture\\KCH_New\\KCH\\Forms\\LoginForm.cs",
+              "RelativeToolTip": "KCH\\Forms\\LoginForm.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-04T12:29:42.061Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "DatabaseHelper.cs",
+              "DocumentMoniker": "C:\\Accenture\\KCH_New\\KCH\\Data\\DatabaseHelper.cs",
+              "RelativeDocumentMoniker": "KCH\\Data\\DatabaseHelper.cs",
+              "ToolTip": "C:\\Accenture\\KCH_New\\KCH\\Data\\DatabaseHelper.cs",
+              "RelativeToolTip": "KCH\\Data\\DatabaseHelper.cs",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAswAgAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-05T15:29:50.747Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ReportForm.cs [Design]",
+              "DocumentMoniker": "C:\\Accenture\\KCH_New\\KCH\\Forms\\ReportForm.cs",
+              "RelativeDocumentMoniker": "KCH\\Forms\\ReportForm.cs",
+              "ToolTip": "C:\\Accenture\\KCH_New\\KCH\\Forms\\ReportForm.cs [Design]",
+              "RelativeToolTip": "KCH\\Forms\\ReportForm.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-06T10:34:46.264Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "KCH",
+              "DocumentMoniker": "C:\\Accenture\\KCH_New\\KCH\\KCH.csproj",
+              "RelativeDocumentMoniker": "KCH\\KCH.csproj",
+              "ToolTip": "C:\\Accenture\\KCH_New\\KCH\\KCH.csproj",
+              "RelativeToolTip": "KCH\\KCH.csproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-06-06T07:29:02.309Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "KCH",
+              "DocumentMoniker": "C:\\Accenture\\KCH_New\\KCH\\KCH.csproj",
+              "RelativeDocumentMoniker": "KCH\\KCH.csproj",
+              "ToolTip": "C:\\Accenture\\KCH_New\\KCH\\KCH.csproj",
+              "RelativeToolTip": "KCH\\KCH.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-06-06T07:32:47.745Z",
+              "EditorCaption": ""
             }
           ]
         }
