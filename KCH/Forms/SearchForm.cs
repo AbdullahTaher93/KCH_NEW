@@ -10,7 +10,6 @@ public class SearchForm : Form
     private TextBox txtCustomerName = new();
     private TextBox txtAddress = new();
     private TextBox txtPhone = new();
-
     private TextBox txtTotal = new();
     private TextBox txtDiscount = new();
     private TextBox txtNetAmount = new();
@@ -20,313 +19,344 @@ public class SearchForm : Form
     private RadioButton rbByNumber = new();
     private RadioButton rbByName = new();
     private DataGridView dgvItems = new();
-    private DataGridView dgvResults = new();
     private Button btnSearch = new();
     private Button btnSave = new();
     private Button btnPrint = new();
     private Button btnBack = new();
-
-    // أزرار تحريك الصفوف المضافة حديثاً للتعديل الذكي
+    private Button btnZoomIn = new();
+    private Button btnZoomOut = new();
     private Button btnMoveUp = new();
     private Button btnMoveDown = new();
-
-    // قائمة الاقتراحات التلقائية
     private ListBox lstSuggestions = new();
     private System.Windows.Forms.Timer _searchTimer = new();
-
-    private float currentAppFontSize = 11f;
+    private float currentFontSize = 12f;
 
     public SearchForm()
     {
         InitializeComponent();
-        dgvItems.ReadOnly = true; // يتم تفعيله عند تحميل فاتورة للتعديل
+        dgvItems.ReadOnly = true;
     }
 
     private void InitializeComponent()
     {
-        // ── 1. إعدادات النافذة الرئيسية ──────────────────────
-        this.Text = "البحث عن الفواتير والتعديل - KCH";
-        this.Size = new Size(1100, 800);
+        this.Text = "البحث عن الفواتير - KCH";
+        this.WindowState = FormWindowState.Maximized;
         this.StartPosition = FormStartPosition.CenterScreen;
-        this.FormBorderStyle = FormBorderStyle.FixedSingle;
-        this.MaximizeBox = false;
+        this.MinimumSize = new Size(1000, 700);
         this.RightToLeft = RightToLeft.Yes;
         this.RightToLeftLayout = true;
         this.BackColor = Color.FromArgb(24, 28, 34);
-        this.Font = new Font("Segoe UI", currentAppFontSize);
+        this.Font = new Font("Segoe UI", 12);
+        this.Padding = new Padding(20);
 
-        // ── 2. منطقة خيارات البحث (Top Search Card) ──────────────────────
-        var pnlSearchCard = new Panel
+        var mainLayout = new TableLayoutPanel
         {
-            Size = new Size(1060, 110),
-            Location = new Point(15, 15),
-            BackColor = Color.FromArgb(32, 38, 46)
+            Dock = DockStyle.Fill,
+            ColumnCount = 1,
+            RowCount = 5,
+            BackColor = Color.FromArgb(24, 28, 34)
         };
-        this.Controls.Add(pnlSearchCard);
+        mainLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 80));   // بحث
+        mainLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 100));  // تفاصيل الفاتورة
+        mainLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));   // الجدول
+        mainLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 130));  // المجاميع
+        mainLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 55));   // أزرار سفلية
+        mainLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+        this.Controls.Add(mainLayout);
 
-        rbByNumber.Text = "🔍  بحث برقم القائمة";
-        rbByNumber.Font = new Font("Segoe UI Semibold", 11, FontStyle.Bold);
+        // ═══════════════════ 1. منطقة البحث ═══════════════════
+        var pnlSearch = new FlowLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            FlowDirection = FlowDirection.RightToLeft,
+            BackColor = Color.FromArgb(32, 38, 46),
+            Padding = new Padding(15, 10, 15, 10),
+            WrapContents = false
+        };
+        mainLayout.Controls.Add(pnlSearch, 0, 0);
+
+        rbByNumber.Text = "بحث برقم القائمة";
+        rbByNumber.Font = new Font("Segoe UI", 12, FontStyle.Bold);
         rbByNumber.ForeColor = Color.White;
-        rbByNumber.Location = new Point(870, 20);
         rbByNumber.AutoSize = true;
         rbByNumber.Checked = true;
-        rbByNumber.BackColor = Color.Transparent;
-        pnlSearchCard.Controls.Add(rbByNumber);
+        rbByNumber.Margin = new Padding(10, 15, 5, 0);
+        pnlSearch.Controls.Add(rbByNumber);
 
-        rbByName.Text = "👤  بحث باسم الزبون";
-        rbByName.Font = new Font("Segoe UI Semibold", 11, FontStyle.Bold);
+        rbByName.Text = "بحث باسم الزبون";
+        rbByName.Font = new Font("Segoe UI", 12, FontStyle.Bold);
         rbByName.ForeColor = Color.White;
-        rbByName.Location = new Point(870, 60);
         rbByName.AutoSize = true;
-        rbByName.BackColor = Color.Transparent;
-        pnlSearchCard.Controls.Add(rbByName);
+        rbByName.Margin = new Padding(20, 15, 5, 0);
+        pnlSearch.Controls.Add(rbByName);
 
-        StyleTextBox(txtSearch, new Size(350, 32), new Point(490, 38), false);
+        txtSearch.Font = new Font("Segoe UI", 13);
+        txtSearch.Size = new Size(400, 35);
+        txtSearch.BackColor = Color.FromArgb(48, 56, 65);
+        txtSearch.ForeColor = Color.White;
+        txtSearch.BorderStyle = BorderStyle.FixedSingle;
+        txtSearch.Margin = new Padding(10, 12, 10, 0);
         txtSearch.TextChanged += TxtSearch_TextChanged;
         txtSearch.KeyDown += TxtSearch_KeyDown;
-        pnlSearchCard.Controls.Add(txtSearch);
+        pnlSearch.Controls.Add(txtSearch);
 
-        StyleButton(btnSearch, "🔍 بحث", Color.FromArgb(0, 120, 215), new Point(345, 35));
-        btnSearch.Size = new Size(130, 40);
-        btnSearch.Click += BtnSearch_Click;
-        pnlSearchCard.Controls.Add(btnSearch);
-
-        StyleButton(btnSave, "💾 حفظ التعديل", Color.FromArgb(40, 167, 69), new Point(205, 35));
-        btnSave.Size = new Size(130, 40);
+        MakeFlowButton(pnlSearch, btnSearch, "🔍 بحث", Color.FromArgb(0, 120, 215), BtnSearch_Click);
+        MakeFlowButton(pnlSearch, btnSave, "💾 حفظ التعديل", Color.FromArgb(40, 167, 69), BtnSave_Click);
         btnSave.Visible = false;
-        btnSave.Click += BtnSave_Click;
-        pnlSearchCard.Controls.Add(btnSave);
 
-        // جدول نتائج البحث عن طريق الاسم
-        dgvResults.Location = new Point(20, 15);
-        dgvResults.Size = new Size(170, 80);
-        dgvResults.BackgroundColor = Color.FromArgb(48, 56, 65);
-        dgvResults.ForeColor = Color.Black;
-        dgvResults.RightToLeft = RightToLeft.Yes;
-        dgvResults.ReadOnly = true;
-        dgvResults.RowHeadersVisible = false;
-        dgvResults.AllowUserToAddRows = false;
-        dgvResults.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-        dgvResults.CellClick += dgvResults_CellClick;
-        dgvResults.Visible = false;
-        pnlSearchCard.Controls.Add(dgvResults);
+        // أزرار تكبير/تصغير الخط
+        MakeFlowButton(pnlSearch, btnZoomIn, "➕ تكبير", Color.FromArgb(50, 55, 65), BtnZoomIn_Click);
+        btnZoomIn.Size = new Size(100, 43);
+        MakeFlowButton(pnlSearch, btnZoomOut, "➖ تصغير", Color.FromArgb(50, 55, 65), BtnZoomOut_Click);
+        btnZoomOut.Size = new Size(100, 43);
+        MakeFlowButton(pnlSearch, btnMoveUp, "🔼", Color.FromArgb(0, 120, 215), BtnMoveUp_Click);
+        btnMoveUp.Size = new Size(55, 43);
+        MakeFlowButton(pnlSearch, btnMoveDown, "🔽", Color.FromArgb(0, 120, 215), BtnMoveDown_Click);
+        btnMoveDown.Size = new Size(55, 43);
 
-        // ── قائمة الاقتراحات التلقائية الداكنة ──
-        lstSuggestions.Font = new Font("Segoe UI", 11);
-        lstSuggestions.Location = new Point(505, 91);
-        lstSuggestions.Size = new Size(350, 120);
+        // قائمة الاقتراحات
+        lstSuggestions.Font = new Font("Segoe UI", 12);
+        lstSuggestions.Size = new Size(400, 130);
         lstSuggestions.Visible = false;
-        lstSuggestions.BorderStyle = BorderStyle.FixedSingle;
         lstSuggestions.BackColor = Color.FromArgb(48, 56, 65);
         lstSuggestions.ForeColor = Color.White;
+        lstSuggestions.BorderStyle = BorderStyle.FixedSingle;
         lstSuggestions.Click += LstSuggestions_Click;
         lstSuggestions.KeyDown += LstSuggestions_KeyDown;
         this.Controls.Add(lstSuggestions);
+        lstSuggestions.BringToFront();
 
         _searchTimer.Interval = 300;
         _searchTimer.Tick += SearchTimer_Tick;
 
-        // ── 3. بطاقة عرض تفاصيل الفاتورة المحملة ────────────────
-        var pnlHeaderCard = new Panel
+        // ═══════════════════ 2. تفاصيل الفاتورة ═══════════════════
+        var pnlInfo = new TableLayoutPanel
         {
-            Size = new Size(1060, 130),
-            Location = new Point(15, 140),
-            BackColor = Color.FromArgb(32, 38, 46)
+            Dock = DockStyle.Fill,
+            ColumnCount = 8,
+            RowCount = 1,
+            BackColor = Color.FromArgb(32, 38, 46),
+            Padding = new Padding(10, 5, 10, 5)
         };
-        this.Controls.Add(pnlHeaderCard);
+        pnlInfo.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+        pnlInfo.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 12));
+        pnlInfo.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+        pnlInfo.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30));
+        pnlInfo.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+        pnlInfo.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30));
+        pnlInfo.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+        pnlInfo.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 18));
+        mainLayout.Controls.Add(pnlInfo, 0, 1);
 
-        pnlHeaderCard.Controls.Add(CreateLabel("رقم القائمة:", new Point(950, 28)));
-        StyleTextBox(txtInvoiceNo, new Size(110, 30), new Point(830, 24), true);
-        pnlHeaderCard.Controls.Add(txtInvoiceNo);
-
-        pnlHeaderCard.Controls.Add(CreateLabel("اسم الزبون:", new Point(710, 28)));
-        StyleTextBox(txtCustomerName, new Size(320, 30), new Point(380, 24), true);
-        pnlHeaderCard.Controls.Add(txtCustomerName);
-
-        pnlHeaderCard.Controls.Add(CreateLabel("تاريخ الشراء:", new Point(240, 28)));
-        dtpDate.Font = new Font("Segoe UI", currentAppFontSize, FontStyle.Bold);
-        dtpDate.Size = new Size(150, 30);
-        dtpDate.Location = new Point(80, 24);
+        pnlInfo.Controls.Add(MakeLabel("رقم:"), 0, 0);
+        StyleInput(txtInvoiceNo, true); pnlInfo.Controls.Add(txtInvoiceNo, 1, 0);
+        pnlInfo.Controls.Add(MakeLabel("الزبون:"), 2, 0);
+        StyleInput(txtCustomerName, true); pnlInfo.Controls.Add(txtCustomerName, 3, 0);
+        pnlInfo.Controls.Add(MakeLabel("العنوان:"), 4, 0);
+        StyleInput(txtAddress, true); pnlInfo.Controls.Add(txtAddress, 5, 0);
+        pnlInfo.Controls.Add(MakeLabel("التاريخ:"), 6, 0);
+        dtpDate.Dock = DockStyle.Fill;
+        dtpDate.Font = new Font("Segoe UI", 12, FontStyle.Bold);
         dtpDate.Format = DateTimePickerFormat.Custom;
         dtpDate.CustomFormat = "dd-MM-yyyy";
-        pnlHeaderCard.Controls.Add(dtpDate);
+        dtpDate.Margin = new Padding(5, 8, 15, 5);
+        pnlInfo.Controls.Add(dtpDate, 7, 0);
 
-        // الصف الثاني: عنوان الزبون | رقم الهاتف
-        pnlHeaderCard.Controls.Add(CreateLabel("عنوان الزبون:", new Point(950, 82)));
-        StyleTextBox(txtAddress, new Size(500, 32), new Point(425, 78), true);
-        pnlHeaderCard.Controls.Add(txtAddress);
-
-        pnlHeaderCard.Controls.Add(CreateLabel("رقم الهاتف:", new Point(305, 82)));
-        StyleTextBox(txtPhone, new Size(155, 32), new Point(145, 78), true);
-        pnlHeaderCard.Controls.Add(txtPhone);
-
-        // ── 4. جدول عرض المواد والأزرار الجانبية للتحريك ──────────────────────
-        dgvItems.Location = new Point(75, 290);
-        dgvItems.Size = new Size(1000, 260);
+        // ═══════════════════ 3. جدول المواد ═══════════════════
+        dgvItems.Dock = DockStyle.Fill;
+        dgvItems.Font = new Font("Segoe UI", 12);
         dgvItems.BackgroundColor = Color.FromArgb(42, 48, 57);
         dgvItems.ForeColor = Color.Black;
         dgvItems.BorderStyle = BorderStyle.None;
-        dgvItems.AllowUserToResizeRows = false;
         dgvItems.RowHeadersVisible = false;
+        dgvItems.AllowUserToResizeRows = false;
         dgvItems.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+        dgvItems.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+        dgvItems.RowTemplate.Height = 35;
 
         dgvItems.EnableHeadersVisualStyles = false;
-        dgvItems.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI Semibold", currentAppFontSize, FontStyle.Bold);
+        dgvItems.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 12, FontStyle.Bold);
         dgvItems.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(240, 173, 78);
         dgvItems.ColumnHeadersDefaultCellStyle.ForeColor = Color.Black;
         dgvItems.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-        dgvItems.ColumnHeadersHeight = 38;
+        dgvItems.ColumnHeadersHeight = 45;
 
         dgvItems.Columns.Add("ID_O", "ت");
-        dgvItems.Columns.Add("Name_Object", "📦  اسم المادة / الصنف");
-        dgvItems.Columns.Add("No_Object", "🔢  العدد (الكمية)");
-        dgvItems.Columns.Add("Price_Object", "💰  سعر المفرد");
-        dgvItems.Columns.Add("Total_price", "💵  المبلغ الإجمالي");
+        dgvItems.Columns.Add("Name_Object", "اسم المادة");
+        dgvItems.Columns.Add("No_Object", "العدد");
+        dgvItems.Columns.Add("Price_Object", "سعر المفرد");
+        dgvItems.Columns.Add("Total_price", "المبلغ الإجمالي");
 
-        dgvItems.Columns["ID_O"]!.Width = 60;
+        dgvItems.Columns["ID_O"]!.FillWeight = 8;
         dgvItems.Columns["ID_O"]!.ReadOnly = true;
-        dgvItems.Columns["ID_O"]!.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-        dgvItems.Columns["Name_Object"]!.Width = 410;
-        dgvItems.Columns["No_Object"]!.Width = 120;
+        dgvItems.Columns["Name_Object"]!.FillWeight = 40;
+        dgvItems.Columns["No_Object"]!.FillWeight = 13;
         dgvItems.Columns["No_Object"]!.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-        dgvItems.Columns["Price_Object"]!.Width = 170;
-        dgvItems.Columns["Total_price"]!.Width = 240;
+        dgvItems.Columns["Price_Object"]!.FillWeight = 18;
+        dgvItems.Columns["Total_price"]!.FillWeight = 21;
         dgvItems.Columns["Total_price"]!.ReadOnly = true;
-        this.Controls.Add(dgvItems);
+        dgvItems.KeyDown += DgvItems_KeyDown;
+        mainLayout.Controls.Add(dgvItems, 0, 2);
 
-        // زر التحريك للأعلى 🔼
-        btnMoveUp.Text = "🔼";
-        btnMoveUp.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
-        btnMoveUp.Size = new Size(50, 50);
-        btnMoveUp.Location = new Point(15, 365);
-        btnMoveUp.BackColor = Color.FromArgb(240, 173, 78);
-        btnMoveUp.ForeColor = Color.Black;
-        btnMoveUp.FlatStyle = FlatStyle.Flat;
-        btnMoveUp.FlatAppearance.BorderSize = 0;
-        btnMoveUp.Cursor = Cursors.Hand;
-        btnMoveUp.Click += BtnMoveUp_Click;
-        this.Controls.Add(btnMoveUp);
-
-        // زر التحريك للأسفل 🔽
-        btnMoveDown.Text = "🔽";
-        btnMoveDown.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
-        btnMoveDown.Size = new Size(50, 50);
-        btnMoveDown.Location = new Point(15, 425);
-        btnMoveDown.BackColor = Color.FromArgb(240, 173, 78);
-        btnMoveDown.ForeColor = Color.Black;
-        btnMoveDown.FlatStyle = FlatStyle.Flat;
-        btnMoveDown.FlatAppearance.BorderSize = 0;
-        btnMoveDown.Cursor = Cursors.Hand;
-        btnMoveDown.Click += BtnMoveDown_Click;
-        this.Controls.Add(btnMoveDown);
-
-        // ── 5. الحسابات والمجاميع السفلية ───────────────
-        var pnlSummaryCard = new Panel
+        // ═══════════════════ 4. المجاميع ═══════════════════
+        var pnlSummary = new TableLayoutPanel
         {
-            Size = new Size(1060, 120),
-            Location = new Point(15, 565),
-            BackColor = Color.FromArgb(32, 38, 46)
+            Dock = DockStyle.Fill,
+            ColumnCount = 10,
+            RowCount = 2,
+            BackColor = Color.FromArgb(32, 38, 46),
+            Padding = new Padding(15, 10, 15, 10)
         };
-        this.Controls.Add(pnlSummaryCard);
+        for (int i = 0; i < 10; i++)
+            pnlSummary.ColumnStyles.Add(new ColumnStyle(i % 2 == 0 ? SizeType.AutoSize : SizeType.Percent, i % 2 == 0 ? 0 : 20));
+        pnlSummary.RowStyles.Add(new RowStyle(SizeType.Percent, 50));
+        pnlSummary.RowStyles.Add(new RowStyle(SizeType.Percent, 50));
+        mainLayout.Controls.Add(pnlSummary, 0, 3);
 
-        pnlSummaryCard.Controls.Add(CreateLabel("المجموع الكلي:", new Point(940, 25)));
-        StyleTextBox(txtTotal, new Size(160, 30), new Point(765, 21), true);
-        txtTotal.ForeColor = Color.FromArgb(0, 150, 255);
-        pnlSummaryCard.Controls.Add(txtTotal);
+        pnlSummary.Controls.Add(MakeSummaryLabel("المجموع:"), 0, 0);
+        StyleSummaryBox(txtTotal, Color.FromArgb(0, 150, 255)); pnlSummary.Controls.Add(txtTotal, 1, 0);
+        pnlSummary.Controls.Add(MakeSummaryLabel("الصافي:"), 2, 0);
+        StyleSummaryBox(txtNetAmount, Color.FromArgb(40, 167, 69)); pnlSummary.Controls.Add(txtNetAmount, 3, 0);
+        pnlSummary.Controls.Add(MakeSummaryLabel("المتبقي:"), 4, 0);
+        StyleSummaryBox(txtRemaining, Color.OrangeRed); pnlSummary.Controls.Add(txtRemaining, 5, 0);
 
-        pnlSummaryCard.Controls.Add(CreateLabel("خصم الفاتورة:", new Point(940, 70)));
-        StyleTextBox(txtDiscount, new Size(160, 30), new Point(765, 66), false);
-        txtDiscount.ForeColor = Color.FromArgb(255, 100, 100);
-        pnlSummaryCard.Controls.Add(txtDiscount);
+        pnlSummary.Controls.Add(MakeSummaryLabel("الخصم:"), 0, 1);
+        StyleInput(txtDiscount, false); txtDiscount.Dock = DockStyle.Fill; txtDiscount.ForeColor = Color.FromArgb(255, 100, 100); txtDiscount.Text = "0";
+        pnlSummary.Controls.Add(txtDiscount, 1, 1);
+        pnlSummary.Controls.Add(MakeSummaryLabel("الواصل:"), 2, 1);
+        StyleSummaryBox(txtPaid, Color.White); pnlSummary.Controls.Add(txtPaid, 3, 1);
 
-        pnlSummaryCard.Controls.Add(CreateLabel("المبلغ الصافي:", new Point(590, 25)));
-        StyleTextBox(txtNetAmount, new Size(160, 30), new Point(415, 21), true);
-        txtNetAmount.ForeColor = Color.FromArgb(40, 167, 69);
-        pnlSummaryCard.Controls.Add(txtNetAmount);
+        // ═══════════════════ 5. أزرار سفلية ═══════════════════
+        var pnlBottom = new FlowLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            FlowDirection = FlowDirection.RightToLeft,
+            Padding = new Padding(5)
+        };
+        mainLayout.Controls.Add(pnlBottom, 0, 4);
+        MakeFlowButton(pnlBottom, btnBack, "↩️ رجوع", Color.FromArgb(50, 55, 65), BtnBack_Click);
+        MakeFlowButton(pnlBottom, btnPrint, "🖨️ طباعة", Color.FromArgb(108, 117, 125), BtnPrint_Click);
+    }
 
-        pnlSummaryCard.Controls.Add(CreateLabel("المبلغ الواصل:", new Point(590, 70)));
-        StyleTextBox(txtPaid, new Size(160, 30), new Point(415, 66), true);
-        txtPaid.ForeColor = Color.White;
-        pnlSummaryCard.Controls.Add(txtPaid);
+    // ═══════════════════ دوال التنسيق ═══════════════════
+    private void MakeFlowButton(FlowLayoutPanel panel, Button btn, string text, Color color, EventHandler handler)
+    {
+        btn.Text = text;
+        btn.Font = new Font("Segoe UI", 12, FontStyle.Bold);
+        btn.Size = new Size(150, 43);
+        btn.BackColor = color;
+        btn.ForeColor = Color.White;
+        btn.FlatStyle = FlatStyle.Flat;
+        btn.FlatAppearance.BorderSize = 0;
+        btn.Cursor = Cursors.Hand;
+        btn.Margin = new Padding(8, 8, 8, 0);
+        btn.Click += handler;
+        panel.Controls.Add(btn);
+    }
 
-        pnlSummaryCard.Controls.Add(CreateLabel("المتبقي بذمته:", new Point(230, 48)));
-        StyleTextBox(txtRemaining, new Size(170, 32), new Point(40, 44), true);
-        txtRemaining.Font = new Font("Segoe UI", currentAppFontSize + 1f, FontStyle.Bold);
-        txtRemaining.ForeColor = Color.OrangeRed;
-        pnlSummaryCard.Controls.Add(txtRemaining);
+    private Label MakeLabel(string text) => new Label
+    {
+        Text = text, Font = new Font("Segoe UI", 12, FontStyle.Bold),
+        ForeColor = Color.FromArgb(180, 190, 200), AutoSize = true,
+        Anchor = AnchorStyles.Right, Margin = new Padding(5, 12, 5, 0)
+    };
 
-        // ── 6. أزرار التحكم السفلية ─────────────────────────
-        StyleButton(btnPrint, "🖨️ طباعة الفاتورة", Color.FromArgb(108, 117, 125), new Point(165, 705));
-        btnPrint.Size = new Size(140, 40);
-        btnPrint.Click += BtnPrint_Click;
-        this.Controls.Add(btnPrint);
+    private Label MakeSummaryLabel(string text) => new Label
+    {
+        Text = text, Font = new Font("Segoe UI", 13, FontStyle.Bold),
+        ForeColor = Color.FromArgb(200, 210, 220), AutoSize = true,
+        Anchor = AnchorStyles.Right, Margin = new Padding(5, 12, 5, 0)
+    };
 
-        StyleButton(btnBack, "↩️ رجوع للرئيسية", Color.FromArgb(50, 55, 65), new Point(15, 705));
-        btnBack.Size = new Size(140, 40);
-        btnBack.Click += BtnBack_Click;
-        this.Controls.Add(btnBack);
+    private void StyleInput(TextBox txt, bool readOnly)
+    {
+        txt.Dock = DockStyle.Fill;
+        txt.Font = new Font("Segoe UI", 12, readOnly ? FontStyle.Bold : FontStyle.Regular);
+        txt.BackColor = readOnly ? Color.FromArgb(24, 28, 34) : Color.FromArgb(48, 56, 65);
+        txt.ForeColor = readOnly ? Color.LightGray : Color.White;
+        txt.BorderStyle = BorderStyle.FixedSingle;
+        txt.ReadOnly = readOnly;
+        txt.Margin = new Padding(5, 8, 15, 5);
+    }
 
-        lstSuggestions.BringToFront();
+    private void StyleSummaryBox(TextBox txt, Color foreColor)
+    {
+        txt.Dock = DockStyle.Fill;
+        txt.Font = new Font("Segoe UI", 14, FontStyle.Bold);
+        txt.BackColor = Color.FromArgb(24, 28, 34);
+        txt.ForeColor = foreColor;
+        txt.BorderStyle = BorderStyle.FixedSingle;
+        txt.ReadOnly = true;
+        txt.Text = "0";
+        txt.Margin = new Padding(5, 8, 15, 5);
     }
 
     private void BtnMoveUp_Click(object? sender, EventArgs e)
     {
-        if (dgvItems.SelectedRows.Count > 0 && !dgvItems.ReadOnly)
-        {
-            int currentIndex = dgvItems.SelectedRows[0].Index;
-            if (currentIndex > 0 && currentIndex < dgvItems.Rows.Count - 1)
-            {
-                MoveRow(currentIndex, currentIndex - 1);
-            }
-        }
+        if (dgvItems.ReadOnly || dgvItems.SelectedRows.Count == 0) return;
+        int idx = dgvItems.SelectedRows[0].Index;
+        if (idx > 0) MoveRow(idx, idx - 1);
     }
 
     private void BtnMoveDown_Click(object? sender, EventArgs e)
     {
-        if (dgvItems.SelectedRows.Count > 0 && !dgvItems.ReadOnly)
-        {
-            int currentIndex = dgvItems.SelectedRows[0].Index;
-            if (currentIndex >= 0 && currentIndex < dgvItems.Rows.Count - 2)
-            {
-                MoveRow(currentIndex, currentIndex + 1);
-            }
-        }
+        if (dgvItems.ReadOnly || dgvItems.SelectedRows.Count == 0) return;
+        int idx = dgvItems.SelectedRows[0].Index;
+        if (idx < dgvItems.Rows.Count - 2) MoveRow(idx, idx + 1);
     }
 
-    private void MoveRow(int sourceIndex, int destIndex)
+    // ═══════════════════ تكبير/تصغير الخط ═══════════════════
+    private void BtnZoomIn_Click(object? sender, EventArgs e)
     {
-        DataGridViewRow currentRow = dgvItems.Rows[sourceIndex];
-        object[] cellValues = new object[currentRow.Cells.Count];
-        for (int i = 0; i < currentRow.Cells.Count; i++)
-        {
-            cellValues[i] = currentRow.Cells[i].Value;
-        }
+        if (currentFontSize < 20f) { currentFontSize += 1.5f; InvoiceForm.PrintFontSize += 1.5f; ApplyFontSize(); }
+    }
 
-        dgvItems.Rows.RemoveAt(sourceIndex);
-        dgvItems.Rows.Insert(destIndex, cellValues);
+    private void BtnZoomOut_Click(object? sender, EventArgs e)
+    {
+        if (currentFontSize > 9f) { currentFontSize -= 1.5f; InvoiceForm.PrintFontSize -= 1.5f; ApplyFontSize(); }
+    }
 
+    private void ApplyFontSize()
+    {
+        var f = new Font("Segoe UI", currentFontSize);
+        var fb = new Font("Segoe UI", currentFontSize, FontStyle.Bold);
+        txtSearch.Font = f; txtInvoiceNo.Font = fb; txtCustomerName.Font = fb;
+        txtAddress.Font = fb; txtPhone.Font = fb; dtpDate.Font = fb;
+        dgvItems.Font = f;
+        dgvItems.ColumnHeadersDefaultCellStyle.Font = fb;
+        dgvItems.RowTemplate.Height = (int)(currentFontSize * 3);
+        txtTotal.Font = fb; txtNetAmount.Font = fb; txtRemaining.Font = fb;
+        txtDiscount.Font = f; txtPaid.Font = fb;
+        // تحديث ارتفاع الصفوف الموجودة
+        foreach (DataGridViewRow row in dgvItems.Rows) row.Height = (int)(currentFontSize * 3);
+    }
+
+    // ═══════════════════ تحريك الصفوف أعلى/أسفل (Alt+Up / Alt+Down) ═══════════════════
+    private void DgvItems_KeyDown(object? sender, KeyEventArgs e)
+    {
+        if (dgvItems.ReadOnly || dgvItems.SelectedRows.Count == 0) return;
+        int idx = dgvItems.SelectedRows[0].Index;
+        if (e.Alt && e.KeyCode == Keys.Up && idx > 0) { MoveRow(idx, idx - 1); e.Handled = true; }
+        else if (e.Alt && e.KeyCode == Keys.Down && idx < dgvItems.Rows.Count - 2) { MoveRow(idx, idx + 1); e.Handled = true; }
+    }
+
+    private void MoveRow(int from, int to)
+    {
+        var row = dgvItems.Rows[from];
+        var vals = new object[row.Cells.Count];
+        for (int i = 0; i < row.Cells.Count; i++) vals[i] = row.Cells[i].Value;
+        dgvItems.Rows.RemoveAt(from);
+        dgvItems.Rows.Insert(to, vals);
         dgvItems.ClearSelection();
-        dgvItems.Rows[destIndex].Selected = true;
-
-        RecalculateRowNumbers();
+        dgvItems.Rows[to].Selected = true;
+        for (int i = 0; i < dgvItems.Rows.Count - 1; i++) dgvItems.Rows[i].Cells["ID_O"].Value = i + 1;
     }
 
-    private void RecalculateRowNumbers()
-    {
-        for (int i = 0; i < dgvItems.Rows.Count - 1; i++)
-        {
-            dgvItems.Rows[i].Cells["ID_O"].Value = i + 1;
-        }
-    }
-
+    // ═══════════════════ منطق البحث ═══════════════════
     private void TxtSearch_TextChanged(object? sender, EventArgs e)
     {
         _searchTimer.Stop();
-        if (string.IsNullOrWhiteSpace(txtSearch.Text))
-        {
-            lstSuggestions.Visible = false;
-            return;
-        }
+        if (string.IsNullOrWhiteSpace(txtSearch.Text)) { lstSuggestions.Visible = false; return; }
         _searchTimer.Start();
     }
 
@@ -343,132 +373,53 @@ public class SearchForm : Form
         {
             using var conn = DatabaseHelper.GetConnection();
             using var cmd = conn.CreateCommand();
-
             if (rbByNumber.Checked)
-            {
-                cmd.CommandText = "SELECT ID_C, Name_C FROM Info_Cost WHERE CAST(ID_C AS TEXT) LIKE @q LIMIT 10";
-                cmd.Parameters.AddWithValue("@q", keyword + "%");
-            }
+            { cmd.CommandText = "SELECT ID_C, Name_C FROM Info_Cost WHERE CAST(ID_C AS TEXT) LIKE @q LIMIT 10"; cmd.Parameters.AddWithValue("@q", keyword + "%"); }
             else
-            {
-                cmd.CommandText = "SELECT ID_C, Name_C FROM Info_Cost WHERE Name_C LIKE @q LIMIT 10";
-                cmd.Parameters.AddWithValue("@q", "%" + keyword + "%");
-            }
+            { cmd.CommandText = "SELECT ID_C, Name_C FROM Info_Cost WHERE Name_C LIKE @q LIMIT 10"; cmd.Parameters.AddWithValue("@q", "%" + keyword + "%"); }
 
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
-            {
-                string id = reader.GetInt64(0).ToString();
-                string name = reader.IsDBNull(1) ? "" : reader.GetString(1);
-                lstSuggestions.Items.Add(new SuggestionItem(id, name));
-            }
+                lstSuggestions.Items.Add($"{reader.GetInt64(0)}  -  {(reader.IsDBNull(1) ? "" : reader.GetString(1))}");
         }
         catch { }
 
         if (lstSuggestions.Items.Count > 0)
         {
-            lstSuggestions.Height = Math.Min(lstSuggestions.Items.Count * 22 + 8, 160);
+            lstSuggestions.Location = new Point(txtSearch.FindForm()!.ClientSize.Width / 2 - 200, 110);
             lstSuggestions.Visible = true;
             lstSuggestions.BringToFront();
         }
-        else
-        {
-            lstSuggestions.Visible = false;
-        }
+        else lstSuggestions.Visible = false;
     }
 
-    private void LstSuggestions_Click(object? sender, EventArgs e)
-    {
-        SelectSuggestion();
-    }
-
+    private void LstSuggestions_Click(object? sender, EventArgs e) => SelectSuggestion();
     private void TxtSearch_KeyDown(object? sender, KeyEventArgs e)
     {
-        if (!lstSuggestions.Visible) return;
-        if (e.KeyCode == Keys.Down)
-        {
-            lstSuggestions.Focus();
-            if (lstSuggestions.Items.Count > 0)
-                lstSuggestions.SelectedIndex = 0;
-            e.Handled = true;
-        }
-        else if (e.KeyCode == Keys.Enter)
-        {
-            lstSuggestions.Visible = false;
-            BtnSearch_Click(sender, e);
-            e.Handled = true;
-        }
-        else if (e.KeyCode == Keys.Escape)
-        {
-            lstSuggestions.Visible = false;
-        }
+        if (e.KeyCode == Keys.Down && lstSuggestions.Visible) { lstSuggestions.Focus(); if (lstSuggestions.Items.Count > 0) lstSuggestions.SelectedIndex = 0; e.Handled = true; }
+        else if (e.KeyCode == Keys.Enter) { lstSuggestions.Visible = false; BtnSearch_Click(sender, e); e.Handled = true; }
+        else if (e.KeyCode == Keys.Escape) lstSuggestions.Visible = false;
     }
-
     private void LstSuggestions_KeyDown(object? sender, KeyEventArgs e)
     {
-        if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return)
-        {
-            SelectSuggestion();
-            e.Handled = true;
-        }
-        else if (e.KeyCode == Keys.Escape)
-        {
-            lstSuggestions.Visible = false;
-            txtSearch.Focus();
-        }
+        if (e.KeyCode == Keys.Enter) { SelectSuggestion(); e.Handled = true; }
+        else if (e.KeyCode == Keys.Escape) { lstSuggestions.Visible = false; txtSearch.Focus(); }
     }
 
     private void SelectSuggestion()
     {
-        if (lstSuggestions.SelectedItem is SuggestionItem item)
-        {
-            lstSuggestions.Visible = false;
-            txtSearch.Text = item.Id;
-            rbByNumber.Checked = true;
-            SearchById(item.Id);
-        }
-    }
-
-    private void dgvResults_CellClick(object? sender, DataGridViewCellEventArgs e)
-    {
-        if (e.RowIndex < 0) return;
-        var id = dgvResults.Rows[e.RowIndex].Cells[0].Value?.ToString();
-        if (id != null)
-        {
-            txtSearch.Text = id;
-            rbByNumber.Checked = true;
-            SearchById(id);
-        }
+        if (lstSuggestions.SelectedItem == null) return;
+        var id = lstSuggestions.SelectedItem.ToString()!.Split('-')[0].Trim();
+        lstSuggestions.Visible = false;
+        txtSearch.Text = id;
+        rbByNumber.Checked = true;
+        SearchById(id);
     }
 
     private void BtnSearch_Click(object? sender, EventArgs e)
     {
         if (string.IsNullOrWhiteSpace(txtSearch.Text)) return;
-
-        if (rbByNumber.Checked)
-        {
-            SearchById(txtSearch.Text.Trim());
-        }
-        else
-        {
-            try
-            {
-                using var conn = DatabaseHelper.GetConnection();
-                using var cmd = conn.CreateCommand();
-                cmd.CommandText = "SELECT ID_C AS [رقم الفاتورة], Name_C AS [اسم الزبون] FROM Info_Cost WHERE Name_C LIKE @name";
-                cmd.Parameters.AddWithValue("@name", "%" + txtSearch.Text.Trim() + "%");
-
-                var dt = new System.Data.DataTable();
-                using var reader = cmd.ExecuteReader();
-                dt.Load(reader);
-                dgvResults.DataSource = dt;
-                dgvResults.Visible = true;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("خطأ أثناء البحث بالاسم: " + ex.Message);
-            }
-        }
+        SearchById(txtSearch.Text.Trim());
     }
 
     private void SearchById(string id)
@@ -485,14 +436,7 @@ public class SearchForm : Form
             txtCustomerName.Text = reader["Name_C"]?.ToString();
             txtAddress.Text = reader["Address_C"]?.ToString() ?? "";
             txtPhone.Text = reader["Phone"]?.ToString() ?? "";
-            if (DateTime.TryParse(reader["Da"]?.ToString(), out DateTime parsedDate))
-            {
-                dtpDate.Value = parsedDate;
-            }
-            else
-            {
-                dtpDate.Value = DateTime.Now; // تاريخ افتراضي في حال فشل التحويل
-            }
+            if (DateTime.TryParse(reader["Da"]?.ToString(), out DateTime d)) dtpDate.Value = d;
             txtTotal.Text = reader["Final_price"]?.ToString();
             txtDiscount.Text = reader["Discount"]?.ToString();
             txtNetAmount.Text = reader["S_P"]?.ToString();
@@ -504,48 +448,22 @@ public class SearchForm : Form
             using var cmdItems = conn.CreateCommand();
             cmdItems.CommandText = "SELECT ID_O, Name_Object, No_Object, Price_Object, Total_price FROM Menu_Cost WHERE ID_C = @id ORDER BY ID_O";
             cmdItems.Parameters.AddWithValue("@id", id);
-
-            using var itemReader = cmdItems.ExecuteReader();
-            while (itemReader.Read())
-            {
-                dgvItems.Rows.Add(
-                    itemReader["ID_O"],
-                    itemReader["Name_Object"],
-                    itemReader["No_Object"],
-                    itemReader["Price_Object"],
-                    itemReader["Total_price"]
-                );
-            }
+            using var ir = cmdItems.ExecuteReader();
+            while (ir.Read()) dgvItems.Rows.Add(ir["ID_O"], ir["Name_Object"], ir["No_Object"], ir["Price_Object"], ir["Total_price"]);
 
             btnSave.Visible = true;
             dgvItems.ReadOnly = false;
-            dgvResults.Visible = false;
         }
-        else
-        {
-            MessageBox.Show("لا توجد فاتورة مسجلة بهذا الرقم", "تنبيه", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
+        else MessageBox.Show("لا توجد فاتورة بهذا الرقم", "تنبيه", MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
 
     private void BtnSave_Click(object? sender, EventArgs e)
     {
         if (string.IsNullOrWhiteSpace(txtInvoiceNo.Text)) return;
-
         var invoiceId = Convert.ToInt64(txtInvoiceNo.Text);
-
-        for (int i = 0; i < dgvItems.Rows.Count - 1; i++)
-        {
-            var row = dgvItems.Rows[i];
-            if (row.Cells["Name_Object"].Value == null || row.Cells["No_Object"].Value == null || row.Cells["Price_Object"].Value == null)
-            {
-                MessageBox.Show("تنبيه: هناك نقص في بيانات الجدول المحرك!", "خطأ", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-        }
 
         using var conn = DatabaseHelper.GetConnection();
         using var transaction = conn.BeginTransaction();
-
         try
         {
             using var cmdDel = conn.CreateCommand();
@@ -558,6 +476,7 @@ public class SearchForm : Form
             for (int i = 0; i < dgvItems.Rows.Count - 1; i++)
             {
                 var row = dgvItems.Rows[i];
+                if (row.Cells["Name_Object"].Value == null) continue;
                 var qty = Convert.ToDouble(row.Cells["No_Object"].Value);
                 var price = Convert.ToDouble(row.Cells["Price_Object"].Value);
                 var itemTotal = qty * price;
@@ -566,8 +485,7 @@ public class SearchForm : Form
 
                 using var cmdIns = conn.CreateCommand();
                 cmdIns.Transaction = transaction;
-                cmdIns.CommandText = @"INSERT INTO Menu_Cost (ID_C, ID_O, Name_Object, No_Object, Price_Object, Total_price)
-                                      VALUES (@idC, @idO, @name, @no, @price, @total)";
+                cmdIns.CommandText = @"INSERT INTO Menu_Cost (ID_C, ID_O, Name_Object, No_Object, Price_Object, Total_price) VALUES (@idC, @idO, @name, @no, @price, @total)";
                 cmdIns.Parameters.AddWithValue("@idC", invoiceId);
                 cmdIns.Parameters.AddWithValue("@idO", i + 1);
                 cmdIns.Parameters.AddWithValue("@name", row.Cells["Name_Object"].Value?.ToString() ?? "");
@@ -577,131 +495,47 @@ public class SearchForm : Form
                 cmdIns.ExecuteNonQuery();
             }
 
-            double discount = 0;
-            double.TryParse(txtDiscount.Text, out discount);
+            double discount = 0; double.TryParse(txtDiscount.Text, out discount);
             double netAmount = totalAmount - discount;
-
-            var payInput = Microsoft.VisualBasic.Interaction.InputBox("الرجاء تحديث المبلغ الواصل من الزبون بعد التعديل:", "تحديث المدفوعات", netAmount.ToString());
+            var payInput = Microsoft.VisualBasic.Interaction.InputBox("المبلغ الواصل:", "تحديث", netAmount.ToString());
             if (string.IsNullOrWhiteSpace(payInput)) { transaction.Rollback(); return; }
-
             double paid = Convert.ToDouble(payInput);
             double remaining = netAmount - paid;
 
-            using var cmdUpdate = conn.CreateCommand();
-            cmdUpdate.Transaction = transaction;
-            cmdUpdate.CommandText = @"UPDATE Info_Cost SET Da = @da, Address_C = @address, Phone = @phone, Discount = @disc, Pay = @pay, Bro = @bro, Final_price = @final, S_P = @sp
-                                     WHERE ID_C = @id";
-            // في دالة BtnSave_Click عند الـ Update:
-            cmdUpdate.Parameters.AddWithValue("@da", dtpDate.Value.ToString("dd-MM-yyyy"));
-            cmdUpdate.Parameters.AddWithValue("@address", txtAddress.Text);
-            cmdUpdate.Parameters.AddWithValue("@phone", txtPhone.Text);
-            cmdUpdate.Parameters.AddWithValue("@disc", discount);
-            cmdUpdate.Parameters.AddWithValue("@pay", paid);
-            cmdUpdate.Parameters.AddWithValue("@bro", remaining);
-            cmdUpdate.Parameters.AddWithValue("@final", totalAmount);
-            cmdUpdate.Parameters.AddWithValue("@sp", netAmount);
-            cmdUpdate.Parameters.AddWithValue("@id", invoiceId);
-            cmdUpdate.ExecuteNonQuery();
+            using var cmdUp = conn.CreateCommand(); cmdUp.Transaction = transaction;
+            cmdUp.CommandText = "UPDATE Info_Cost SET Da=@da, Discount=@d, Pay=@p, Bro=@b, Final_price=@f, S_P=@s WHERE ID_C=@id";
+            cmdUp.Parameters.AddWithValue("@da", dtpDate.Value.ToString("dd-MM-yyyy"));
+            cmdUp.Parameters.AddWithValue("@d", discount);
+            cmdUp.Parameters.AddWithValue("@p", paid);
+            cmdUp.Parameters.AddWithValue("@b", remaining);
+            cmdUp.Parameters.AddWithValue("@f", totalAmount);
+            cmdUp.Parameters.AddWithValue("@s", netAmount);
+            cmdUp.Parameters.AddWithValue("@id", invoiceId);
+            cmdUp.ExecuteNonQuery();
 
             transaction.Commit();
-
             txtTotal.Text = totalAmount.ToString("N0");
             txtNetAmount.Text = netAmount.ToString("N0");
             txtPaid.Text = paid.ToString("N0");
             txtRemaining.Text = remaining.ToString("N0");
-
-            MessageBox.Show("تم حفظ وإعادة هيكلة الفاتورة بنجاح التام", "تم بنجاح", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("تم الحفظ بنجاح", "تم", MessageBoxButtons.OK, MessageBoxIcon.Information);
             btnSave.Visible = false;
             dgvItems.ReadOnly = true;
         }
-        catch (Exception ex)
-        {
-            transaction.Rollback();
-            MessageBox.Show("فشلت عملية الحفظ بسبب: \n" + ex.Message, "خطأ غير متوقع", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
+        catch (Exception ex) { transaction.Rollback(); MessageBox.Show("خطأ:\n" + ex.Message); }
     }
 
     private void BtnPrint_Click(object? sender, EventArgs e)
     {
-        if (string.IsNullOrWhiteSpace(txtInvoiceNo.Text))
-        {
-            MessageBox.Show("يرجى اختيار قائمة لغرض الطباعة", "تنبيه", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            return;
-        }
-
-        if (btnSave.Visible)
-        {
-            if (MessageBox.Show("سيتم طباعة البيانات دون حفظ التعديلات، للاستمرار اضغط نعم", "تنبيه",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
-            {
-                MessageBox.Show("يرجى حفظ البيانات أولاً", "تنبيه");
-                return;
-            }
-        }
-
-        var reportForm = new ReportForm(Convert.ToInt32(txtInvoiceNo.Text));
-        reportForm.Show();
-        this.Hide();
+        if (string.IsNullOrWhiteSpace(txtInvoiceNo.Text)) { MessageBox.Show("اختر قائمة أولاً"); return; }
+        var r = new ReportForm(Convert.ToInt32(txtInvoiceNo.Text));
+        r.Show(); this.Hide();
     }
 
     private void BtnBack_Click(object? sender, EventArgs e)
     {
-        var invoiceForm = new InvoiceForm();
-        invoiceForm.Show();
-        this.Hide();
+        var f = new InvoiceForm(); f.Show(); this.Hide();
     }
 
-    private void StyleButton(Button btn, string text, Color backColor, Point location)
-    {
-        btn.Text = text;
-        btn.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
-        btn.Size = new Size(135, 40);
-        btn.Location = location;
-        btn.BackColor = backColor;
-        btn.ForeColor = backColor == Color.FromArgb(240, 173, 78) ? Color.Black : Color.White;
-        btn.FlatStyle = FlatStyle.Flat;
-        btn.Cursor = Cursors.Hand;
-        btn.FlatAppearance.BorderSize = 0;
-        btn.TextAlign = ContentAlignment.MiddleCenter;
-    }
-
-    private void StyleTextBox(TextBox txt, Size size, Point location, bool isReadOnly)
-    {
-        txt.Font = new Font("Segoe UI", currentAppFontSize, isReadOnly ? FontStyle.Bold : FontStyle.Regular);
-        txt.Size = size;
-        txt.Location = location;
-        txt.BackColor = isReadOnly ? Color.FromArgb(24, 28, 34) : Color.FromArgb(48, 56, 65);
-        txt.ForeColor = isReadOnly ? Color.LightGray : Color.White;
-        txt.BorderStyle = BorderStyle.FixedSingle;
-        txt.ReadOnly = isReadOnly;
-    }
-
-    private Label CreateLabel(string text, Point location)
-    {
-        return new Label
-        {
-            Text = text,
-            Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold),
-            ForeColor = Color.FromArgb(180, 190, 200),
-            AutoSize = true,
-            Location = location,
-            BackColor = Color.Transparent
-        };
-    }
-
-    protected override void OnFormClosed(FormClosedEventArgs e)
-    {
-        _searchTimer.Dispose();
-        Application.Exit();
-        base.OnFormClosed(e);
-    }
-}
-
-// ── كلاس المساعد لعناصر الاقتراحات (Suggestion Items) ──
-internal class SuggestionItem
-{
-    public string Id { get; }
-    public string Name { get; }
-    public SuggestionItem(string id, string name) { Id = id; Name = name; }
-    public override string ToString() => $"  {Id}  -  {Name}";
+    protected override void OnFormClosed(FormClosedEventArgs e) { _searchTimer.Dispose(); Application.Exit(); base.OnFormClosed(e); }
 }
